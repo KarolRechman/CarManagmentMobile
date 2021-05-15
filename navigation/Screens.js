@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Easing, Animated, Dimensions } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -6,8 +6,9 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Block, Text, theme } from "galio-framework";
 
 import ComponentsScreen from '../screens/Components';
-import HomeScreen from '../screens/Home';
+import Dashboard from '../screens/Home';
 import SpendingsScreen from '../screens/Spendings';
+import SpendingsTable from '../screens/SpendingsTable';
 import OnboardingScreen from '../screens/Onboarding';
 import ProfileScreen from '../screens/Profile';
 import ProScreen from '../screens/Pro';
@@ -16,6 +17,7 @@ import SettingsScreen from '../screens/Settings';
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
 import { Images, materialTheme } from "../constants/";
+import { AuthContext } from "./Container";
 
 const { width } = Dimensions.get("screen");
 
@@ -28,6 +30,14 @@ const profile = {
   type: "Kierowca",
   plan: "Pro",
 };
+
+function SplashScreen() {
+  return (
+    <View>
+      <Text>Loading...</Text>
+    </View>
+  );
+}
 
 function ProfileStack(props) {
   return (
@@ -104,12 +114,28 @@ function SpendingsStack(props) {
   );
 }
 
+function SpendingsTableStack(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Spendings Table"
+        component={SpendingsTable}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header title="Spendings Table" scene={scene} navigation={navigation} />
+          )
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
       <Stack.Screen
         name="Dashboard"
-        component={HomeScreen}
+        component={Dashboard}
         options={{
           header: ({ navigation, scene }) => (
             <Header
@@ -241,185 +267,46 @@ function AppStack(props) {
           )
         }}
       />
+      <Drawer.Screen
+        name="Spendings Table"
+        component={SpendingsTableStack}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="table"
+              family="font-awesome"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: 2, marginLeft: 2 }}
+            />
+          )
+        }}
+      />
     </Drawer.Navigator>
   );
 }
 
 export default function OnboardingStack(props) {
+  const state = props.value;
   return (
+
     <Stack.Navigator mode="card" headerMode="none">
-      <Stack.Screen
-        name="Onboarding"
-        component={OnboardingScreen}
-        option={{
-          headerTransparent: true
-        }}
-      />
-      <Stack.Screen name="App" component={AppStack} />
+
+      {state.userToken == null ? (
+        // No token found, user isn't signed in
+        <Stack.Screen
+          name="SignIn"
+          component={OnboardingScreen}
+          options={{
+            title: 'Sign in',
+            // When logging out, a pop animation feels intuitive
+            animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+          }}
+        />
+      ) : (
+        // User is signed in
+        <Stack.Screen name="Home" component={AppStack} />
+      )}
     </Stack.Navigator>
   );
 }
-
-/*
-const ProfileStack = createStackNavigator({
-  Profile: {
-    screen: ProfileScreen,
-    navigationOptions: ({ navigation }) => ({
-      header: <Header white transparent title="Profile" navigation={navigation} />,
-      headerTransparent: true,
-    })
-  },
-}, {
-  cardStyle: { backgroundColor: '#EEEEEE', },
-  transitionConfig,
-});
-
-const SettingsStack = createStackNavigator({
-  Settings: {
-    screen: SettingsScreen,
-    navigationOptions: ({ navigation }) => ({
-      header: <Header title="Settings" navigation={navigation} />,
-    })
-  },
-}, {
-  cardStyle: { backgroundColor: '#EEEEEE', },
-  transitionConfig,
-});
-
-const ComponentsStack = createStackNavigator({
-  Components: {
-    screen: ComponentsScreen,
-    navigationOptions: ({ navigation }) => ({
-      header: <Header title="Components" navigation={navigation} />,
-    })
-  },
-}, {
-  cardStyle: { backgroundColor: '#EEEEEE', },
-  transitionConfig,
-});
-
-
-const HomeStack = createStackNavigator({
-  Home: {
-    screen: HomeScreen,
-    navigationOptions: ({navigation}) => ({
-      header: <Header search tabs title="Home" navigation={navigation} />,
-    })
-  },
-  Pro: {
-    screen: ProScreen,
-    navigationOptions: ({navigation}) => ({
-      header: <Header back white transparent title="" navigation={navigation} />,
-      headerTransparent: true,
-    })
-  },
-},
-{
-  cardStyle: {
-    backgroundColor: '#EEEEEE', //this is the backgroundColor for the app
-  },
-  transitionConfig,
-});
-
-const AppStack = createDrawerNavigator(
-  {
-    Onboarding: {
-      screen: OnboardingScreen,
-      navigationOptions: {
-        drawerLabel: () => {},
-      },
-    },
-    Home: {
-      screen: HomeStack,
-      navigationOptions: {
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Home" title="Home" />
-        )
-      }
-    },
-    Woman: {
-      screen: ProScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Pro" title="Woman" />
-        ),
-      }),
-    },
-    Man: {
-      screen: ProScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Pro" title="Man" />
-        ),
-      }),
-    },
-    Kids: {
-      screen: ProScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Pro" title="Kids" />
-        ),
-      }),
-    },
-    NewCollection: {
-      screen: ProScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Pro" title="New Collection" />
-        ),
-      }),
-    },
-    Profile: {
-      screen: ProfileStack,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Profile" title="Profile" />
-        ),
-      }),
-    },
-    Settings: {
-      screen: SettingsStack,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Settings" title="Settings" />
-        ),
-      }),
-    },
-    Components: {
-      screen: ComponentsStack,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Components" title="Components" />
-        ),
-      }),
-    },
-    MenuDivider: {
-      screen: HomeStack,
-      navigationOptions: {
-        drawerLabel: () => <Block style={{marginVertical: 8}}><Text>{` `}</Text></Block>,
-      },
-    },
-    SignIn: {
-      screen: ProScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Pro" title="Sign In" />
-        ),
-      }),
-    },
-    SignUp: {
-      screen: ProScreen,
-      navigationOptions: (navOpt) => ({
-        drawerLabel: ({focused}) => (
-          <Drawer focused={focused} screen="Pro" title="Sign Up" />
-        ),
-      }),
-    },
-  },
-  Menu
-);
-
-const AppContainer = createAppContainer(AppStack);
-export default AppContainer;
-
-*/

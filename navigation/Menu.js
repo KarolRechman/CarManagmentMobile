@@ -2,9 +2,10 @@ import React from "react";
 import { TouchableWithoutFeedback, ScrollView, StyleSheet, Image } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { useSafeArea } from "react-native-safe-area-context";
-
+import { AuthContext } from "./Container";
 import { Icon, Drawer as DrawerCustomItem } from '../components/';
-import { Images, materialTheme } from "../constants/";
+import { materialTheme } from "../constants/";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 
 function CustomDrawerContent({
@@ -19,10 +20,12 @@ function CustomDrawerContent({
   const screens = [
     "Dashboard",
     "Profile",
-    "Settings",
-    "Components",
-    "Spendings"
+    // "Settings",
+    // "Components",
+    "Spendings",
+    "Spendings Table",
   ];
+  const { signOut } = React.useContext(AuthContext);
   return (
     <Block
       style={styles.container}
@@ -33,7 +36,7 @@ function CustomDrawerContent({
           onPress={() => navigation.navigate("Profile")}
         >
           <Block style={styles.profile}>
-            <Image source={ profile.avatar } style={styles.avatar} />
+            <Image source={profile.avatar} style={styles.avatar} />
             <Text h5 color={"white"}>
               {profile.name}
             </Text>
@@ -78,11 +81,13 @@ function CustomDrawerContent({
         </ScrollView>
       </Block>
       <Block flex={0.3} style={{ paddingLeft: 7, paddingRight: 14 }}>
+        <TouchableOpacity onPress={signOut}>
         <DrawerCustomItem
-          title="Sign In"
+          title="Sign Out"
           navigation={navigation}
           focused={state.index === 8 ? true : false}
         />
+        </TouchableOpacity>
       </Block>
     </Block>
   );
