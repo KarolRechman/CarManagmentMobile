@@ -5,38 +5,21 @@ import {
 } from 'react-native';
 import { Block, Button, Text, theme, Input } from 'galio-framework';
 import { Icon } from '../components/';
-import api, { API_TYPES } from "../actions/api";
+
 
 const { height, width } = Dimensions.get('screen');
 
 import materialTheme from '../constants/Theme';
+import { AuthContext } from "../navigation/Container";
+
+
 
 
 export default function Onboarding({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  let user;
-  // const { navigation } = props;
-
-  async function handleSubmit(event,) {
-    navigation.navigate("App")
-
-    // user = {
-    //   Email: email,
-    //   Password: password
-    // }
-
-    // await api.request(API_TYPES.USER).userLogin(user).then(respose => {
-    //   // localStorage.setItem('user', user.Email);
-    //   // localStorage.setItem('userId', respose.data.id);
-    //   // localStorage.setItem('token', respose.data.token);
-    //   // console.log(`/admin/dashboard/${respose.data.id}`)
-    //   // props.history.push(`/admin/dashboard/${respose.data.id}`);
-    //   navigation.navigate("App")
-    // })
-  }
-
-
+  const { signIn } = React.useContext(AuthContext);
+//test3@gamil.com
 
   return (
     <KeyboardAvoidingView
@@ -89,7 +72,7 @@ export default function Onboarding({ navigation }) {
                     shadowless
                     style={styles.button}
                     color={materialTheme.COLORS.BUTTON_COLOR}
-                    onPress={handleSubmit}>
+                    onPress={() => signIn({ email, password })}>
                     LOGIN
               </Button>
                 </Block>
