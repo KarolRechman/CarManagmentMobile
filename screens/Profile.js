@@ -1,18 +1,53 @@
-import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform } from 'react-native';
-import { Block, Text, theme } from 'galio-framework';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform, View, Alert } from 'react-native';
+import { Block, Text, theme, Input, Button } from 'galio-framework';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import api, { API_TYPES } from "../actions/api";
 import { Icon } from '../components';
 import { Images, materialTheme } from '../constants';
 import { HeaderHeight } from "../constants/utils";
+import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default class Profile extends React.Component {
-  render() {
-    return (
+export default function Profile() {
+
+  const [user, setUser] = useState({});
+
+  const handleChange = (value, name) => {
+    setUser((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      const id = await SecureStore.getItemAsync("userId");
+      const userOld = await api.request(API_TYPES.USER).fetchById("/" + id);
+      setUser(userOld.data);
+      setUser((prevState) => ({
+        ...prevState,
+        idUser: id,
+      }));
+    };
+
+    fetchData();
+  }, []);
+
+  async function SendData() {
+
+    console.log(user);
+    await api.request(API_TYPES.USER).update(user.idUser, user).then(res => {
+      setUser(res.data);
+      Alert.alert("Zaktualizowano Dane");
+    });
+
+  }
+  return (
+    <View>
       <Block flex style={styles.profile}>
         <Block flex>
           <ImageBackground
@@ -36,44 +71,135 @@ export default class Profile extends React.Component {
             </Block>
           </ImageBackground>
         </Block>
-        <Block flex style={styles.options}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
-              <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>36</Text>
-                <Text muted size={12}>Orders</Text>
-              </Block>
-              <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>5</Text>
-                <Text muted size={12}>Bids & Offers</Text>
-              </Block>
-              <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>2</Text>
-                <Text muted size={12}>Messages</Text>
-              </Block>
-            </Block>
-            <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
-              <Text size={16}>Recently viewed</Text>
-              <Text size={12} color={theme.COLORS.PRIMARY} onPress={() => this.props.navigation.navigate('Home')}>View All</Text>
-            </Block>
-            <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
-              <Block row space="between" style={{ flexWrap: 'wrap' }} >
-                {Images.Viewed.map((img, imgIndex) => (
-                  <Image
-                    source={{ uri: img }}
-                    key={`viewed-${img}`}
-                    resizeMode="cover"
-                    style={styles.thumb}
-                  />
-                ))}
-              </Block>
-            </Block>
-          </ScrollView>
-        </Block>
       </Block>
-    );
-  }
+      <ScrollView style={styles.inputsView}>
+        <Input
+          type="text"
+          style={styles.inputPrice}
+          placeholderTextColor= "grey"
+          placeholder="Username"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.UserName}
+          help="Username"
+          onChangeText={(value) => handleChange(value,"UserName")}
+        />
+        <Input
+          type="text"
+          style={styles.inputPrice}
+          placeholder="Email address"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.Email}
+          help="Email address"
+          onChangeText={value => handleChange(value,"Email")}
+        />
+        <Input
+          type="numeric"
+          style={styles.inputPrice}
+          placeholder="Phone number"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.PhoneNumber}
+          help="Phone number"
+          onChangeText={value => handleChange(value,"PhoneNumber")}
+        />
+        <Input
+          type="text"
+          style={styles.inputPrice}
+          placeholder="First Name"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.FirstName}
+          help="First Name"
+          onChangeText={value => handleChange(value,"FirstName")}
+        />
+        <Input
+          type="text"
+          style={styles.inputPrice}
+          placeholder="Last Name"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.LastName}
+          help="Last Name"
+          onChangeText={value => handleChange(value,"LastName")}
+        />
+        <Input
+          type="text"
+          style={styles.inputPrice}
+          placeholder="City"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.City}
+          help="City"
+          onChangeText={value => handleChange(value,"City")}
+        />
+        <Input
+          type="text"
+          style={styles.inputPrice}
+          placeholder="Country"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.Country}
+          help="Country"
+          onChangeText={value => handleChange(value,"Country")}
+        />
+        <Input
+          type="text"
+          style={styles.PostalCode}
+          placeholder="Post Code"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={user.PostCode}
+          help="Postal Code"
+          onChangeText={value => handleChange(value,"PostCode")}
+        />
+              <Button style={styles.buttonSubmit} color="success" onPress={SendData}>Aktualizuj</Button>
+      </ScrollView>
+    </View>
+
+  );
 }
+
 
 const styles = StyleSheet.create({
   profile: {
@@ -86,10 +212,10 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     width: width,
-    height: height / 2,
+    height: height / 3,
   },
   profileDetails: {
-    paddingTop: theme.SIZES.BASE * 4,
+    paddingTop: theme.SIZES.BASE * 2,
     justifyContent: 'flex-end',
     position: 'relative',
   },
@@ -109,11 +235,25 @@ const styles = StyleSheet.create({
   seller: {
     marginRight: theme.SIZES.BASE / 2,
   },
-  options: {
-    position: 'relative',
+  inputsView: {
+    marginTop: 400,
     padding: theme.SIZES.BASE,
+    //  paddingTop: -theme.SIZES.BASE * 7,
     marginHorizontal: theme.SIZES.BASE,
-    marginTop: -theme.SIZES.BASE * 7,
+    borderTopLeftRadius: 13,
+    borderTopRightRadius: 13,
+    borderBottomLeftRadius: 13,
+    borderBottomRightRadius: 13,
+    backgroundColor: theme.COLORS.WHITE,
+    shadowColor: 'black',
+    height: "75%",
+    // paddingBottom: 50,
+  },
+  options: {
+    // position: 'relative',
+    // padding: theme.SIZES.BASE,
+    marginHorizontal: theme.SIZES.BASE,
+    // paddingTop: -theme.SIZES.BASE * 2,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
     backgroundColor: theme.COLORS.WHITE,
@@ -137,5 +277,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: '30%',
     position: 'absolute',
+  },
+  PostalCode: {
+    marginBottom:20,
+  },
+  buttonSubmit: {
+    marginBottom:40,
   },
 });

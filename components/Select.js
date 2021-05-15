@@ -5,7 +5,7 @@ import { Block, Text, Icon,theme } from 'galio-framework';
 
 export default class DropDown extends React.Component {
   state = {
-    value: 1,
+    value: "Proszę wybrać wartość",
   }
 
   handleOnSelect = (index, value) => {
@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
   dropdown: {
     marginTop: 8,
     marginLeft: -16,
-    width: 100,
+    width: "90%",
   },
 });

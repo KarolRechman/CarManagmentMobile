@@ -1,12 +1,12 @@
 export default [
   {
-    title: 'Hardly Anything Takes More Coura...',
+    title: 'Wydatki',
     image: 'https://source.unsplash.com/dS2hi__ZZMk/840x840',
     price: 180,
     horizontal: true,
   },
   {
-    title: 'Find the cheapest deals on our range...',
+    title: 'Auta w użyciu',
     image: 'https://source.unsplash.com/tb6ulgGY5Zc/840x840',
     price: 220,
   },
@@ -22,7 +22,7 @@ export default [
     horizontal: true,
   },
   {
-    title: 'Coffee - A Drop of Happiness in a Cup',
+    title: 'Wszystkie wydatki rozłożone w czasie',
     image: 'https://source.unsplash.com/Ws4wd-vJ9M0/840x840',
     price: 180,
   },
