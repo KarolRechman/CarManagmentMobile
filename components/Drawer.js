@@ -52,17 +52,17 @@ class DrawerItem extends React.Component {
           return (
             <Icon
               size={16}
-              name="circle-10"
-              family="GalioExtra"
+              name="money"
+              family="fontAwsome"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           );
 
-      case "Sign In":
+      case "Sign Out":
         return (
           <Icon
-            size={16}
-            name="ios-log-in"
+            size={26}
+            name="ios-log-out"
             family="ionicon"
             color={focused ? "white" : materialTheme.COLORS.MUTED}
           />
@@ -76,6 +76,15 @@ class DrawerItem extends React.Component {
             color={focused ? "white" : materialTheme.COLORS.MUTED}
           />
         );
+        case "Spendings Table":
+          return (
+            <Icon
+              size={16}
+              name="table-chart"
+              family="MaterialIcons"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+            />
+          );
       default:
         return null;
     }
@@ -83,6 +92,7 @@ class DrawerItem extends React.Component {
 
   render() {
     const { focused, title, navigation } = this.props;
+    
 
     return (
       <TouchableOpacity style={{ height: 55 }} onPress={() => {navigation.navigate(title)}}>

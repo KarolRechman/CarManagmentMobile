@@ -22,6 +22,8 @@ import { Images, products, materialTheme } from './constants/';
 import { NavigationContainer } from '@react-navigation/native';
 import Screens from './navigation/Screens';
 
+import {Container} from "./navigation/Container";
+
 // Before rendering any navigation stack
 import { enableScreens } from 'react-native-screens';
 enableScreens();
@@ -63,14 +65,7 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <NavigationContainer>
-          <GalioProvider theme={materialTheme}>
-            <Block flex>
-              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-              <Screens />
-            </Block>
-          </GalioProvider>
-        </NavigationContainer>
+        <Container />
       );
     }
   }

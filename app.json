@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "rn-material-kit-free",
-    "description": "React Native - Material Kit Free",
-    "slug": "rn-material-kit-free",
+    "name": "Car Managment",
+    "description": "Car Managment Mobile app",
+    "slug": "Car Managment",
     "privacy": "unlisted",
     "platforms": [
       "ios",
@@ -10,9 +10,9 @@
     ],
     "version": "1.8.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Benz.jpg",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/Benz.jpg",
       "resizeMode": "cover",
       "backgroundColor": "#6C24AA"
     },
