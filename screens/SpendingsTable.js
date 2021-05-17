@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, ScrollView, View } from 'react-native';
-import { Button, Block, Text, Input, theme } from 'galio-framework';
+import { Text } from 'galio-framework';
 import api, { API_TYPES } from "../actions/api";
-import Select from "../components/Select";
+import DropDownPicker from 'react-native-dropdown-picker';
 import * as SecureStore from 'expo-secure-store';
 import { DataTable } from 'react-native-paper';
 
@@ -14,12 +14,18 @@ export default function SpendingsTable(props) {
     const [oldSpendings, setOldSpendings] = useState([]);
     const [filterSpendings, setFilterSpendings] = useState([]);
     const [cars, setCars] = useState([]);
-    const [carsForSelect, setCarsForSelect] = useState([]);
+    const [carsForSelect, setCarsForSelect] = useState([{
+        label: "All", value: 0
+    }]);
     const [costs, setCosts] = useState([]);
-    const [state, setState] = React.useState({
+    const [state, setState] = useState({
         carId: 0,
         costId: 0,
     });
+
+
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +46,9 @@ export default function SpendingsTable(props) {
             let mapSpendings = await setSpendings(request.data, userCars.data, costsResponse.data)
             setOldSpendings(mapSpendings);
             setUpdatedSpendings(mapSpendings);
-            setCarsForSelect(userCars.data.map(v => v.model));
+            setCarsForSelect((prevState)=>{
+              return  [...prevState,...userCars.data.map(v => ({ label: v.model, value: v.idCar }))];
+            });
         };
 
         fetchData();
@@ -73,29 +81,31 @@ export default function SpendingsTable(props) {
         return newSpendings;
     }
 
-    const handleChangeCars = (index, value) => {
-        let car = cars.filter(x => x.model == value);
-
-        if (car[0].idCar != 0) {
-            let carSpendings = oldSpendings.filter((x) => x.carID == event.target.value);
+    const handleChangeCars = (value) => {
+        if (value != 0) {
+            let car = cars.filter(x => x.idCar == value);
+            let carSpendings = oldSpendings.filter((x) => x.carID == car[0].model);
             setFilterSpendings(carSpendings);
         } else {
             setFilterSpendings(oldSpendings);
         }
     };
-    // console.log(cars)
-    // console.log(carsForSelect)
 
     return (
         <View style={styles.home}>
             <Text style={styles.text}>
                 Samochód
             </Text>
-            <Select
-                 defaultIndex={"Cars"}
-                options={carsForSelect}
-                style={styles.select}
-
+            <DropDownPicker
+                open={open}
+                value={value}
+                items={carsForSelect}
+                setOpen={setOpen}
+                setValue={setValue}
+                onChangeValue={(value) => {
+                    setValue(value);
+                    handleChangeCars(value);
+                }}
             />
             <DataTable>
                 <DataTable.Header>
@@ -138,7 +148,7 @@ const styles = StyleSheet.create({
     home: {
         width: width,
         padding: 15,
-        marginBottom:15,
+        marginBottom: 15,
     },
     inputPrice: {
 
