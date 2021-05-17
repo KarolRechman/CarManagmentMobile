@@ -85,6 +85,15 @@ class DrawerItem extends React.Component {
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
           );
+          case "Avialable Cars":
+            return (
+              <Icon
+                size={16}
+                name="car-rental"
+                family="MaterialIcons"
+                color={focused ? "white" : materialTheme.COLORS.MUTED}
+              />
+            );
       default:
         return null;
     }

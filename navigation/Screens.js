@@ -13,7 +13,7 @@ import OnboardingScreen from '../screens/Onboarding';
 import ProfileScreen from '../screens/Profile';
 import ProScreen from '../screens/Pro';
 import SettingsScreen from '../screens/Settings';
-
+import CarAvialable from "../screens/CarAvialable";
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
 import { Images, materialTheme } from "../constants/";
@@ -129,6 +129,23 @@ function SpendingsTableStack(props) {
     </Stack.Navigator>
   );
 }
+
+function AvialableCars(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Avialable Cars"
+        component={CarAvialable}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header title="Avialable Cars" scene={scene} navigation={navigation} />
+          )
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 
 function HomeStack(props) {
   return (
@@ -270,6 +287,21 @@ function AppStack(props) {
       <Drawer.Screen
         name="Spendings Table"
         component={SpendingsTableStack}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="table"
+              family="font-awesome"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: 2, marginLeft: 2 }}
+            />
+          )
+        }}
+      />
+      <Drawer.Screen
+        name="Avialable Cars"
+        component={AvialableCars}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon

@@ -24,6 +24,7 @@ function CustomDrawerContent({
     // "Components",
     "Spendings",
     "Spendings Table",
+    "Avialable Cars",
   ];
   const { signOut } = React.useContext(AuthContext);
   return (
