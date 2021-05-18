@@ -5,6 +5,7 @@ import api, { API_TYPES } from "../actions/api";
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as SecureStore from 'expo-secure-store';
 import { DataTable } from 'react-native-paper';
+import DateTimePicker from '../components/DateTimePicker';
 
 const { width } = Dimensions.get('screen');
 
@@ -17,42 +18,10 @@ export default function CarAvialable(props) {
         startDate: null,
         endDate: null,
     });
-
-    // const setCarList = (list) => {
-    //     const updatedJson = list.map(
-    //         ({
-    //             idCar: id,
-    //             manufacturer: manuf,
-    //             model,
-    //             color: color1,
-    //             yofProd: yofProd1,
-    //             kilometers: kilometers1,
-    //             priceDay,
-    //             isAvailable: isAvailable1,
-    //             insurance: insurance1,
-    //             segment: segment1,
-    //             regNumbers: regNumbers1,
-    //             filePath: filePath1,
-    //             techRev: techRev1,
-    //         }) => ({
-    //             id,
-    //             manuf,
-    //             model,
-    //             color1,
-    //             yofProd1,
-    //             kilometers1,
-    //             priceDay,
-    //             isAvailable1,
-    //             insurance1,
-    //             segment1,
-    //             regNumbers1,
-    //             filePath1,
-    //             techRev1,
-    //         })
-    //     );
-
-    //     setData(updatedJson.filter((x) => x.isAvailable1 == 1));
-    // }
+    const [reservationTime, setReservation] = useState({
+        startTime: null,
+        endTime: null,
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,38 +54,67 @@ export default function CarAvialable(props) {
         await api.request(API_TYPES.TRANSACTIONS).create("", newTransaction).then(response => {
             console.log(response)
             if (response.data == "OK") {
-               setRefresh(!refresh)
+                setRefresh(!refresh)
                 // Modal(response.data);
             }
         })
     }
 
-    // const handleChange = (e) => {
+    const handlePickerChange = (type, mode, selectedDate) => {
+        if (mode === "date") {
+            if (type === "zwrotu") {
+                setState((prevState) => ({
+                    ...prevState,
+                    endDate: selectedDate.substring(0, selectedDate.indexOf("T"))
+                }))
+            } else {
+                setState((prevState) => ({
+                    ...prevState,
+                    startDate: selectedDate.substring(0, selectedDate.indexOf("T"))
+                }))
+            }
+        } else {
+            if (type === "zwrotu") {
+                setReservation((prevState) => ({
+                    ...prevState,
+                    startTime: selectedDate.substring(0, selectedDate.indexOf("T"))
+                }))
+            } else {
+                setReservation((prevState) => ({
+                    ...prevState,
+                    endTime: selectedDate.substring(0, selectedDate.indexOf("T"))
+                }))
+            }
+        }
+    };
+    // console.log(carList)
 
-    //     setState((prevState) => ({
-    //         ...prevState,
-    //         [e.target.name]: e.target.value,
-    //     }));
-    // };
-    console.log(carList)
+    const startDateProps = {
+        title: "Data wynajmu",
+        mode: "date",
+        onChange: handlePickerChange,
+    }
+
+    const endDateProps = {
+        title: "Data zwrotu",
+        mode: "date",
+        onChange: handlePickerChange,
+    }
+
+    const startTimeProps = {
+        title: "Godzina wynajmu",
+        mode: "time",
+        onChange: handlePickerChange,
+    }
+
+    const endTimeProps = {
+        title: "Godzina zwrotu",
+        mode: "time",
+        onChange: handlePickerChange,
+    }
 
     return (
         <View style={styles.home}>
-            {/* <Text style={styles.text}>
-                Samochód
-            </Text>
-            <DropDownPicker
-                open={open}
-                value={value}
-                items={carsForSelect}
-                setOpen={setOpen}
-                setValue={setValue}
-                onChangeValue={(value) => {
-                    setValue(value);
-                    handleChangeCars(value);
-                }}
-            /> */}
-
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title>Manufacturer</DataTable.Title>
@@ -147,6 +145,18 @@ export default function CarAvialable(props) {
                 label="1-2 of 6"
             /> */}
             </DataTable>
+            <View style={styles.pickerContainer}>
+                <Text>Wznajem</Text>
+                <DateTimePicker {...startDateProps} />
+                <DateTimePicker {...startTimeProps} />
+
+            </View>
+            <View style={styles.pickerContainer}>
+                <Text>Zwrot</Text>
+                <DateTimePicker {...endDateProps} />
+                <DateTimePicker {...endTimeProps} />
+            </View>
+
         </View>
     )
 }
@@ -166,4 +176,11 @@ const styles = StyleSheet.create({
     icon: {
         color: "rgba(255, 255, 255, 0.54)",
     },
+    pickerContainer: {
+        padding: 15,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    }
 });
