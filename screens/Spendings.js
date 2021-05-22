@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Dimensions, ScrollView, Alert } from 'react-native';
-import { Button, Block, Text, Input, theme, Card } from 'galio-framework';
+import { Button, Text, Input } from 'galio-framework';
 import api, { API_TYPES } from "../actions/api";
-import { Icon, Product } from '../components';
 import Select from "../components/Select";
 import * as SecureStore from 'expo-secure-store';
 
 const { width } = Dimensions.get('screen');
-import products from '../constants/products';
 
 export default function Spendings(props) {
   const [refresh, setRefresh] = useState(false);

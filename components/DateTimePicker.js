@@ -11,7 +11,7 @@ export default function Picker(props){
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
-    props.onChange(props.title.substring(props.title.indexOf(" ")+1),mode,selectedDate)
+    props.onChange(props.mode, selectedDate, props.keyName)
   };
 
   const showMode = (currentMode) => {

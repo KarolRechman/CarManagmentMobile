@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, ScrollView, View } from 'react-native';
-import { Text } from 'galio-framework';
+import { StyleSheet, Dimensions, ScrollView, View, Alert } from 'react-native';
+import { Button, Text } from 'galio-framework';
 import api, { API_TYPES } from "../actions/api";
-import DropDownPicker from 'react-native-dropdown-picker';
-import * as SecureStore from 'expo-secure-store';
 import { DataTable } from 'react-native-paper';
 import DateTimePicker from '../components/DateTimePicker';
+import * as SecureStore from 'expo-secure-store';
 
 const { width } = Dimensions.get('screen');
 
@@ -14,14 +13,18 @@ export default function CarAvialable(props) {
     const [carList, setData] = useState([]);
     const [dateTimePicker, showDateTimePicker] = useState(false);
     const [refresh, setRefresh] = useState(false);
-    const [state, setState] = useState({
+    const [show, showButton] = useState(false);
+    const [carId, setCarId] = useState(0);
+    const [date, setDate] = useState({
         startDate: null,
         endDate: null,
-    });
-    const [reservationTime, setReservation] = useState({
         startTime: null,
         endTime: null,
     });
+
+    const setCarAndCell = (cell, id) => {
+        setCarId(id)
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,84 +35,94 @@ export default function CarAvialable(props) {
         fetchData();
     }, [refresh]);
 
-    const reserveCar = async () => {
-        sendTransaction();
-    };
+    useEffect(() => {
+        const checkDateTime = () => {
+            if (checkProperties(date)) {
+                showButton(true)
+            }
+        }
+
+        checkDateTime();
+    }, [date]);
 
     async function sendTransaction() {
+        console.log(date)
+        if (carId) {
+            const id = await SecureStore.getItemAsync("userId");
+            let car = carList.filter(x => x.idCar == carId);
 
-        let car = carList.filter(x => x.id == selectionModel);
-        console.log(car)
-        let newTransaction = {
-            Transaction: 0,
-            User: props.match.params.id,
-            Car: parseInt(selectionModel),
-            Price: parseInt(car[0].priceDay),
-            IsEnd: false,
-            IsReturned: false,
-            StartDate: new Date(state.startDate),
-            EndDate: new Date(state.endDate),
-        }
-        console.log(newTransaction)
-        await api.request(API_TYPES.TRANSACTIONS).create("", newTransaction).then(response => {
-            console.log(response)
-            if (response.data == "OK") {
-                setRefresh(!refresh)
-                // Modal(response.data);
+            let startDate = new Date(date.startDate.getFullYear(), date.startDate.getMonth(), date.startDate.getDate(),
+                date.startTime.getHours(), date.startTime.getMinutes(), date.startTime.getSeconds());
+
+            let endDate = new Date(date.endDate.getFullYear(), date.endDate.getMonth(), date.endDate.getDate(),
+                date.endTime.getHours(), date.endTime.getMinutes(), date.endTime.getSeconds());
+
+            console.log(car)
+            let newTransaction = {
+                Transaction: 0,
+                User: id,
+                Car: parseInt(carId),
+                Price: parseInt(car[0].priceDay),
+                IsEnd: false,
+                IsReturned: false,
+                StartDate: startDate,
+                EndDate: endDate
             }
-        })
+            console.log(newTransaction)
+            await api.request(API_TYPES.TRANSACTIONS).create("", newTransaction).then(response => {
+                console.log(response)
+                if (response.data == "OK") {
+                    setRefresh(!refresh)
+                   Alert.alert("Zarezerwano samochód")
+                }
+            })
+        }
+
     }
 
-    const handlePickerChange = (type, mode, selectedDate) => {
-        if (mode === "date") {
-            if (type === "zwrotu") {
-                setState((prevState) => ({
-                    ...prevState,
-                    endDate: selectedDate.substring(0, selectedDate.indexOf("T"))
-                }))
-            } else {
-                setState((prevState) => ({
-                    ...prevState,
-                    startDate: selectedDate.substring(0, selectedDate.indexOf("T"))
-                }))
-            }
-        } else {
-            if (type === "zwrotu") {
-                setReservation((prevState) => ({
-                    ...prevState,
-                    startTime: selectedDate.substring(0, selectedDate.indexOf("T"))
-                }))
-            } else {
-                setReservation((prevState) => ({
-                    ...prevState,
-                    endTime: selectedDate.substring(0, selectedDate.indexOf("T"))
-                }))
-            }
+    const handlePickerChange = (mode, selectedDate, key) => {
+        if (selectedDate) {
+            setDate((prevState) => ({
+                ...prevState,
+                [key]: selectedDate
+            }))
         }
     };
-    // console.log(carList)
+
+    const checkProperties = (obj) => {
+        for (var key in obj) {
+            if (obj[key] == null || obj[key] == "")
+                return false;
+        }
+        return true;
+    }
+    //  console.log(carList)
 
     const startDateProps = {
         title: "Data wynajmu",
         mode: "date",
+        keyName: "startDate",
         onChange: handlePickerChange,
     }
 
     const endDateProps = {
         title: "Data zwrotu",
         mode: "date",
+        keyName: "endDate",
         onChange: handlePickerChange,
     }
 
     const startTimeProps = {
         title: "Godzina wynajmu",
         mode: "time",
+        keyName: "startTime",
         onChange: handlePickerChange,
     }
 
     const endTimeProps = {
         title: "Godzina zwrotu",
         mode: "time",
+        keyName: "endTime",
         onChange: handlePickerChange,
     }
 
@@ -128,7 +141,7 @@ export default function CarAvialable(props) {
 
                         <DataTable.Row key={index}>
                             <DataTable.Cell >{car.manufacturer}</DataTable.Cell>
-                            <DataTable.Cell numeric>{car.model}</DataTable.Cell>
+                            <DataTable.Cell numeric onPress={cell => setCarAndCell(cell, car.idCar)} >{car.model}</DataTable.Cell>
                             <DataTable.Cell numeric>{car.color}</DataTable.Cell>
                             <DataTable.Cell numeric>{car.yofProd}</DataTable.Cell>
                             <DataTable.Cell numeric>{car.priceDay}</DataTable.Cell>
@@ -156,8 +169,14 @@ export default function CarAvialable(props) {
                 <DateTimePicker {...endDateProps} />
                 <DateTimePicker {...endTimeProps} />
             </View>
+            {
+                show ? (<View style={styles.pickerContainer}>
+                    <Button color="success" onPress={sendTransaction}>Zarezerwuj</Button>
+                </View>) : null
+            }
 
-        </View>
+
+        </View >
     )
 }
 

@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, View } from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import api, { API_TYPES } from "../actions/api";
 import * as SecureStore from 'expo-secure-store';
 import Item from '../components/Item';
 import { DataTable } from 'react-native-paper';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit";
 
 const { width } = Dimensions.get('screen');
-import products from '../constants/products';
+import infos from '../constants/products';
 
 export default Dashboard = () => {
-  const [carDesc, setData] = useState();
+  const [cars, setData] = useState();
+  const [carsInfos, setCarInfos] = useState(infos);
   const [spendings, setSpendings] = useState();
   const [sumValues, setSumValues] = useState();
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,11 +33,99 @@ export default Dashboard = () => {
 
       setData(userCars.data);
       setSpendings(userSpendings.data);
-      setSumValues(setSumExpanses(userSpendings.data));
+
+      await updateInfos(setSumExpanses(userSpendings.data), userCars.data.length)
     };
 
+    const updateInfos = async (sumValues, carsLength) => {
+      if (sumValues && carsLength) {
+        infos[0].desc = sumValues;
+        infos[1].desc = carsLength;
+        setCarInfos(infos)
+      }
+    }
+
     fetchData();
-  }, []);
+
+  }, [carsInfos]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userId = await SecureStore.getItemAsync("userId");
+      const userCars = await api.request(API_TYPES.SPENDINGS).fetchUserCars("/" + userId);
+      const userSpendings = await api.request(API_TYPES.SPENDINGS).fetchSpendings("/" + userId);
+
+      setData(userCars.data);
+      setSpendings(userSpendings.data);
+
+      await updateInfos(setSumExpanses(userSpendings.data), userCars.data.length)
+    };
+
+    const updateInfos = async (sumValues, carsLength) => {
+      if (sumValues && carsLength) {
+        infos[0].desc = sumValues;
+        infos[1].desc = carsLength;
+        infos[2].chart = <Chart />;
+        setCarInfos(infos)
+      }
+    }
+
+    const Chart = () => {
+      return (
+        <View>
+          <LineChart
+            data={{
+              labels: ["January", "February", "March", "April", "May", "June"],
+              datasets: [
+                {
+                  data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100
+                  ]
+                }
+              ]
+            }}
+            width={Dimensions.get("window").width} // from react-native
+            height={220}
+            yAxisLabel="PLN"
+            // yAxisSuffix="k"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: "#e26a00",
+              backgroundGradientFrom: "#fb8c00",
+              backgroundGradientTo: "#ffa726",
+              decimalPlaces: 2, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#ffa726"
+              }
+            }}
+            bezier
+            style={{
+              flex:1,
+              marginVertical: 8,
+              borderRadius: 8,
+              padding:15,
+              margin:5,
+            }}
+          />
+        </View>)
+    }
+
+    fetchData();
+
+  }, [carsInfos, sumValues]);
+
 
   function setSumExpanses(spendings) {
     var map = spendings.reduce(function (map, spending) {
@@ -46,20 +145,25 @@ export default Dashboard = () => {
     return array.reduce((total, obj) => obj.price + total, 0);
   }
 
+  // products[1].desc = cars.length;
+
   return (
     <Block flex center style={styles.home}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.products}>
         <Block flex>
-          <Item item={products[0]} horizontal />
+          <Item item={carsInfos[0]} horizontal />
           <Block flex row>
-            <Item item={products[1]} style={{ marginRight: theme.SIZES.BASE }} />
-            <Item item={products[2]} />
+            <Item item={carsInfos[1]} full style={{ marginRight: theme.SIZES.BASE }} />
+            {/* <Item item={carsInfos[2]} /> */}
           </Block>
-          <Item item={products[3]} horizontal />
-          <Item item={products[4]} full />
+          {/* <Item item={carsInfos[3]} horizontal /> */}
+
+          <Item item={carsInfos[2]} full />
+
         </Block>
+
         <DataTable>
           <DataTable.Header>
             <DataTable.Title>Producent</DataTable.Title>
@@ -67,12 +171,12 @@ export default Dashboard = () => {
             <DataTable.Title>Kolor</DataTable.Title>
             <DataTable.Title numeric>Rok prod</DataTable.Title>
           </DataTable.Header>
-          {carDesc ? carDesc.map( car =>
+          {cars ? cars.map(car =>
             <DataTable.Row key={car.id}>
-              <DataTable.Cell key={car.id}>{car.manufacturer}</DataTable.Cell>
-              <DataTable.Cell key={car.id}>{car.model}</DataTable.Cell>
-              <DataTable.Cell key={car.id}>{car.color}</DataTable.Cell>
-              <DataTable.Cell key={car.id} numeric>{car.yofProd}</DataTable.Cell>
+              <DataTable.Cell >{car.manufacturer}</DataTable.Cell>
+              <DataTable.Cell >{car.model}</DataTable.Cell>
+              <DataTable.Cell >{car.color}</DataTable.Cell>
+              <DataTable.Cell numeric>{car.yofProd}</DataTable.Cell>
             </DataTable.Row>) : null}
 
           <DataTable.Pagination

@@ -25,8 +25,9 @@ class Item extends React.Component {
         // onPress={() => navigation.navigate('Pro', { item: item })}
         >
           <Block flex space="between" style={styles.itemDescription}>
-            <Text size={14} style={styles.itemTitle}>{item.title}</Text>
-            <Text size={12} muted={!priceColor} color={priceColor}>${item.price}</Text>
+            <Text size={18} style={styles.itemTitle}>{item.title}</Text>
+            <Text size={26} muted={!priceColor} color={priceColor}>{item.desc}</Text>
+            {item.chart}
           </Block>
         </TouchableWithoutFeedback>
       </Block>
