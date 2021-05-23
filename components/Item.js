@@ -3,8 +3,6 @@ import { withNavigation } from '@react-navigation/compat';
 import { StyleSheet, Dimensions, Image, TouchableWithoutFeedback } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 
-import materialTheme from '../constants/Theme';
-
 const { width } = Dimensions.get('screen');
 
 class Item extends React.Component {
@@ -14,16 +12,12 @@ class Item extends React.Component {
 
     return (
       <Block row={horizontal} card flex style={[styles.item, styles.shadow, style]}>
-        <TouchableWithoutFeedback
-        //  onPress={() => navigation.navigate('Pro', { item: item })}
-         >
+        <TouchableWithoutFeedback>
           <Block flex style={[styles.imageContainer, styles.shadow]}>
             <Image source={{ uri: item.image }} style={imageStyles} />
           </Block>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback 
-        // onPress={() => navigation.navigate('Pro', { item: item })}
-        >
+        <TouchableWithoutFeedback>
           <Block flex space="between" style={styles.itemDescription}>
             <Text size={18} style={styles.itemTitle}>{item.title}</Text>
             <Text size={26} muted={!priceColor} color={priceColor}>{item.desc}</Text>

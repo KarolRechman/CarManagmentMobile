@@ -14,6 +14,8 @@ import {
   StackedBarChart
 } from "react-native-chart-kit";
 
+const screenWidth = Dimensions.get("window").width;
+
 const { width } = Dimensions.get('screen');
 import infos from '../constants/products';
 
@@ -65,66 +67,73 @@ export default Dashboard = () => {
       if (sumValues && carsLength) {
         infos[0].desc = sumValues;
         infos[1].desc = carsLength;
-        infos[2].chart = <Chart />;
+        infos[2].chart =           <Chart />
         setCarInfos(infos)
       }
-    }
-
-    const Chart = () => {
-      return (
-        <View>
-          <LineChart
-            data={{
-              labels: ["January", "February", "March", "April", "May", "June"],
-              datasets: [
-                {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100
-                  ]
-                }
-              ]
-            }}
-            width={Dimensions.get("window").width} // from react-native
-            height={220}
-            yAxisLabel="PLN"
-            // yAxisSuffix="k"
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: "#e26a00",
-              backgroundGradientFrom: "#fb8c00",
-              backgroundGradientTo: "#ffa726",
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16
-              },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#ffa726"
-              }
-            }}
-            bezier
-            style={{
-              flex:1,
-              marginVertical: 8,
-              borderRadius: 8,
-              padding:15,
-              margin:5,
-            }}
-          />
-        </View>)
     }
 
     fetchData();
 
   }, [carsInfos, sumValues]);
+
+  const Chart = () => {
+    return (
+      <View>
+        <LineChart
+          data={{
+            labels: ["January", "February", "March", "April", "May", "June","January", "February", "March", "April", "May", "June"],
+            datasets: [
+              {
+                data: [
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100
+                ]
+              }
+            ]
+          }}
+
+          width={screenWidth-50} 
+          height={300}
+          yAxisLabel=" PLN "
+          yLabelsOffset={1}
+          verticalLabelRotation={90}
+          xLabelsOffset={-20}
+          yAxisInterval={1} 
+          chartConfig={{
+            backgroundColor: "#e26a00",
+            backgroundGradientFrom: "#fb8c00",
+            backgroundGradientTo: "#ffa726",
+            decimalPlaces: 2, 
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
+              borderRadius: 16,
+            },
+            propsForDots: {
+              r: "4",
+              strokeWidth: "2",
+              stroke: "#ffa726"
+            }
+          }}
+          bezier
+          style={{
+           flex: 3,
+            marginVertical: 8,
+            borderRadius: 5,
+          }}
+        />
+      </View>)
+  }
 
 
   function setSumExpanses(spendings) {
@@ -145,8 +154,6 @@ export default Dashboard = () => {
     return array.reduce((total, obj) => obj.price + total, 0);
   }
 
-  // products[1].desc = cars.length;
-
   return (
     <Block flex center style={styles.home}>
       <ScrollView
@@ -156,12 +163,8 @@ export default Dashboard = () => {
           <Item item={carsInfos[0]} horizontal />
           <Block flex row>
             <Item item={carsInfos[1]} full style={{ marginRight: theme.SIZES.BASE }} />
-            {/* <Item item={carsInfos[2]} /> */}
           </Block>
-          {/* <Item item={carsInfos[3]} horizontal /> */}
-
-          <Item item={carsInfos[2]} full />
-
+          <Item item={carsInfos[2]} />
         </Block>
 
         <DataTable>
