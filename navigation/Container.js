@@ -75,6 +75,8 @@ function Container({ navigation }) {
 
                     SecureStore.setItemAsync("userToken", respose.data.token);
                     SecureStore.setItemAsync("userId", respose.data.id);
+                    SecureStore.setItemAsync("user", data.email);
+                    SecureStore.setItemAsync("role", respose.data.role);
                     dispatch({ type: 'SIGN_IN', token: respose.data.token });
                     // localStorage.setItem('user', user.Email);
                     // localStorage.setItem('userId', respose.data.id);
@@ -88,6 +90,8 @@ function Container({ navigation }) {
             signOut: () =>{
                 SecureStore.deleteItemAsync("userToken");
                 SecureStore.deleteItemAsync("userId");
+                SecureStore.deleteItemAsync("user");
+                SecureStore.deleteItemAsync("role");
                 dispatch({ type: 'SIGN_OUT' });
             } 
         }),

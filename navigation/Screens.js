@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Easing, Animated, Dimensions } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -18,18 +18,19 @@ import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
 import { Images, materialTheme } from "../constants/";
 import { AuthContext } from "./Container";
+import * as SecureStore from 'expo-secure-store';
 
 const { width } = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const profile = {
-  avatar: require("../assets/images/Benz.jpg"),
-  name: "Imię i Nazwisko",
-  type: "Kierowca",
-  plan: "Pro",
-};
+// const profile = {
+//   avatar: require("../assets/images/Benz.jpg"),
+//   name: await SecureStore.getItemAsync("userId"),
+//   type: "Kierowca",
+//   plan: "Pro",
+// };
 
 function SplashScreen() {
   return (
@@ -180,6 +181,24 @@ function HomeStack(props) {
 }
 
 function AppStack(props) {
+  const [profile, setProfile] = useState({})
+
+useEffect(() => {
+  const setProfileData = async () => {
+    setProfile({
+      avatar: require("../assets/images/Benz.jpg"),
+      name: await SecureStore.getItemAsync("user"),
+      type: "Kierowca",
+      plan: "Pro",
+    })
+  }
+
+  setProfileData();
+}, [profile])
+
+
+
+
   return (
     <Drawer.Navigator
       style={{ flex: 1 }}
@@ -198,10 +217,8 @@ function AppStack(props) {
         itemStyle: {
           width: width * 0.74,
           paddingHorizontal: 12,
-          // paddingVertical: 4,
           justifyContent: "center",
           alignContent: "center",
-          // alignItems: 'center',
           overflow: "hidden"
         },
         labelStyle: {
@@ -218,7 +235,7 @@ function AppStack(props) {
           drawerIcon: ({ focused }) => (
             <Icon
               size={16}
-              name="shop"
+              name="home"
               family="GalioExtra"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />

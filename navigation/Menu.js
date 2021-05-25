@@ -20,8 +20,6 @@ function CustomDrawerContent({
   const screens = [
     "Dashboard",
     "Profile",
-    // "Settings",
-    // "Components",
     "Spendings",
     "Spendings Table",
     "Avialable Cars",
