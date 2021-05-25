@@ -19,101 +19,42 @@ const screenWidth = Dimensions.get("window").width;
 const { width } = Dimensions.get('screen');
 import infos from '../constants/products';
 
+
+
+
 export default Dashboard = () => {
   const [cars, setData] = useState();
   const [carsInfos, setCarInfos] = useState(infos);
   const [spendings, setSpendings] = useState();
   const [sumValues, setSumValues] = useState();
+  const [dataLabels, setDataLabels] = useState([]);
+  const [dataSeries, setDataSeries] = useState([]);
 
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const userId = await SecureStore.getItemAsync("userId");
-      const userCars = await api.request(API_TYPES.SPENDINGS).fetchUserCars("/" + userId);
-      const userSpendings = await api.request(API_TYPES.SPENDINGS).fetchSpendings("/" + userId);
-
-      setData(userCars.data);
-      setSpendings(userSpendings.data);
-
-      await updateInfos(setSumExpanses(userSpendings.data), userCars.data.length)
-    };
-
-    const updateInfos = async (sumValues, carsLength) => {
-      if (sumValues && carsLength) {
-        infos[0].desc = sumValues;
-        infos[1].desc = carsLength;
-        setCarInfos(infos)
-      }
-    }
-
-    fetchData();
-
-  }, [carsInfos]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const userId = await SecureStore.getItemAsync("userId");
-      const userCars = await api.request(API_TYPES.SPENDINGS).fetchUserCars("/" + userId);
-      const userSpendings = await api.request(API_TYPES.SPENDINGS).fetchSpendings("/" + userId);
-
-      setData(userCars.data);
-      setSpendings(userSpendings.data);
-
-      await updateInfos(setSumExpanses(userSpendings.data), userCars.data.length)
-    };
-
-    const updateInfos = async (sumValues, carsLength) => {
-      if (sumValues && carsLength) {
-        infos[0].desc = sumValues;
-        infos[1].desc = carsLength;
-        infos[2].chart =           <Chart />
-        setCarInfos(infos)
-      }
-    }
-
-    fetchData();
-
-  }, [carsInfos, sumValues]);
-
-  const Chart = () => {
+  const Chart = ({ dataLabels, dataSeries }) => {
     return (
       <View>
         <LineChart
           data={{
-            labels: ["January", "February", "March", "April", "May", "June","January", "February", "March", "April", "May", "June"],
+            labels: dataLabels,
             datasets: [
               {
-                data: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100
-                ]
+                data: dataSeries,
               }
             ]
           }}
 
-          width={screenWidth-50} 
+          width={screenWidth - 50}
           height={300}
           yAxisLabel=" PLN "
           yLabelsOffset={1}
           verticalLabelRotation={90}
           xLabelsOffset={-20}
-          yAxisInterval={1} 
+          yAxisInterval={1}
           chartConfig={{
             backgroundColor: "#e26a00",
             backgroundGradientFrom: "#fb8c00",
             backgroundGradientTo: "#ffa726",
-            decimalPlaces: 2, 
+            decimalPlaces: 2,
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {
@@ -127,7 +68,7 @@ export default Dashboard = () => {
           }}
           bezier
           style={{
-           flex: 3,
+            flex: 3,
             marginVertical: 8,
             borderRadius: 5,
           }}
@@ -135,8 +76,35 @@ export default Dashboard = () => {
       </View>)
   }
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const userId = await SecureStore.getItemAsync("userId");
+      const userCars = await api.request(API_TYPES.SPENDINGS).fetchUserCars("/" + userId);
+      const userSpendings = await api.request(API_TYPES.SPENDINGS).fetchSpendings("/" + userId);
 
-  function setSumExpanses(spendings) {
+      setData(userCars.data);
+      setSpendings(userSpendings.data);
+
+      await updateInfos(await setSumExpanses(userSpendings.data), userCars.data.length)
+    };
+
+    const updateInfos = async (sumValues, carsLength) => {
+      if (sumValues && carsLength) {
+        infos[0].desc = sumValues;
+        infos[1].desc = carsLength;
+        infos[2].chart = <Chart dataLabels={dataLabels} dataSeries={dataSeries} />
+        setCarInfos(infos)
+      }
+    }
+
+    fetchData();
+
+  }, [carsInfos, sumValues]);
+
+
+
+
+  async function setSumExpanses(spendings) {
     var map = spendings.reduce(function (map, spending) {
       var date = spending.date;
       var price = +spending.price;
@@ -150,6 +118,23 @@ export default Dashboard = () => {
         price: map[date],
       };
     });
+
+    let labels = [];
+    let series = [];
+
+    array.forEach((element) => {
+      for (let [key, value] of Object.entries(element)) {
+        if (key == "date") {
+          labels.push(value.toString());
+        }
+        if (key == "price") {
+          series.push(value.toString());
+        }
+      }
+    });
+
+    setDataLabels(labels);
+    setDataSeries(series);
 
     return array.reduce((total, obj) => obj.price + total, 0);
   }
@@ -166,7 +151,6 @@ export default Dashboard = () => {
           </Block>
           <Item item={carsInfos[2]} />
         </Block>
-
         <DataTable>
           <DataTable.Header>
             <DataTable.Title>Producent</DataTable.Title>
