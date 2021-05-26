@@ -63,8 +63,11 @@ export default function SpendingsTable(props) {
     }, [filterSpendings]);
 
     async function setSpendings(spendings, cars, costs) {
+        let userSpendings = spendings.filter((s) =>
+        cars.find((c) => c.idCar == s.carID)
+      );
 
-        let newSpendings = spendings.map((spending) => {
+        let newSpendings = userSpendings.map((spending) => {
 
             spending.date = spending.date.substring(0, spending.date.indexOf("T"));
             let carDesc = cars.find((car) => car.idCar === spending.carID);

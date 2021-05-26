@@ -71,7 +71,7 @@ export default function Spendings(props) {
      });
     }
   }
-console.log(carsForSelect)
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

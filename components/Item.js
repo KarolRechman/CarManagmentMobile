@@ -21,7 +21,6 @@ class Item extends React.Component {
           <Block flex space="between" style={styles.itemDescription}>
             <Text size={18} style={styles.itemTitle}>{item.title}</Text>
             <Text size={26} muted={!priceColor} color={priceColor}>{item.desc}</Text>
-            {item.chart}
           </Block>
         </TouchableWithoutFeedback>
       </Block>
