@@ -29,25 +29,6 @@ class DrawerItem extends React.Component {
             color={focused ? "white" : materialTheme.COLORS.MUTED}
           />
         );
-      case "Settings":
-        return (
-          <Icon
-            size={16}
-            name="gears"
-            family="font-awesome"
-            color={focused ? "white" : materialTheme.COLORS.MUTED}
-          />
-        );
-      case "Components":
-        return (
-          <Icon
-            size={16}
-            name="md-switch"
-            family="ionicon"
-            color={focused ? "white" : materialTheme.COLORS.MUTED}
-          />
-        );
-        
         case "Spendings":
           return (
             <Icon
@@ -94,6 +75,15 @@ class DrawerItem extends React.Component {
                 color={focused ? "white" : materialTheme.COLORS.MUTED}
               />
             );
+            case "Car":
+              return (
+                <Icon
+                  size={16}
+                  name="car-sport"
+                  family="ionicon"
+                  color={focused ? "white" : materialTheme.COLORS.MUTED}
+                />
+              );
       default:
         return null;
     }

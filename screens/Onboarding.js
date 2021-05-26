@@ -18,8 +18,17 @@ import { AuthContext } from "../navigation/Container";
 export default function Onboarding({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [disabled, setDisabled] = useState(true);
   const { signIn } = React.useContext(AuthContext);
-//test3@gamil.com
+  //test3@gamil.com
+
+  useEffect(() => {
+    if (email != "" && password != "") {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  }, [email, password]);
 
   return (
     <KeyboardAvoidingView
@@ -68,13 +77,15 @@ export default function Onboarding({ navigation }) {
                   />
                 </Block>
                 <Block>
-                  <Button
+                  {disabled ? null : <Button
+                    disabled={disabled}
                     shadowless
                     style={styles.button}
                     color={materialTheme.COLORS.BUTTON_COLOR}
                     onPress={() => signIn({ email, password })}>
                     LOGIN
-              </Button>
+              </Button>}
+
                 </Block>
               </Block>
 

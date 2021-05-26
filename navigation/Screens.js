@@ -1,23 +1,20 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Easing, Animated, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Dimensions } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import { Block, Text, theme } from "galio-framework";
+import { Text } from "galio-framework";
 
-import ComponentsScreen from '../screens/Components';
 import Dashboard from '../screens/Home';
 import SpendingsScreen from '../screens/Spendings';
 import SpendingsTable from '../screens/SpendingsTable';
 import OnboardingScreen from '../screens/Onboarding';
 import ProfileScreen from '../screens/Profile';
-import ProScreen from '../screens/Pro';
-import SettingsScreen from '../screens/Settings';
 import CarAvialable from "../screens/CarAvialable";
+import Car from "../screens/Car";
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
-import { Images, materialTheme } from "../constants/";
-import { AuthContext } from "./Container";
+import { materialTheme } from "../constants/";
 import * as SecureStore from 'expo-secure-store';
 
 const { width } = Dimensions.get("screen");
@@ -57,42 +54,6 @@ function ProfileStack(props) {
             />
           ),
           headerTransparent: true
-        }}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function SettingsStack(props) {
-  return (
-    <Stack.Navigator
-      initialRouteName="Settings"
-      mode="card"
-      headerMode="screen"
-    >
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title="Settings" scene={scene} navigation={navigation} />
-          )
-        }}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function ComponentsStack(props) {
-  return (
-    <Stack.Navigator mode="card" headerMode="screen">
-      <Stack.Screen
-        name="Components"
-        component={ComponentsScreen}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title="Components" scene={scene} navigation={navigation} />
-          )
         }}
       />
     </Stack.Navigator>
@@ -148,6 +109,30 @@ function AvialableCars(props) {
 }
 
 
+function CarAddEdit(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Car"
+        component={Car}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              white
+              transparent
+              title="Car"
+              scene={scene}
+              navigation={navigation}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+
 function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
@@ -166,38 +151,150 @@ function HomeStack(props) {
           )
         }}
       />
-      <Stack.Screen
-        name="Pro"
-        component={ProScreen}
+    </Stack.Navigator>
+  );
+}
+
+function AppAdminStack(props) {
+  const [profile, setProfile] = useState({})
+
+  useEffect(() => {
+    const setProfileData = async () => {
+      setProfile({
+        avatar: require("../assets/images/Benz.jpg"),
+        name: await SecureStore.getItemAsync("user"),
+        type: "Admin",
+        plan: "Pro",
+      })
+    }
+
+    setProfileData();
+  }, [profile])
+
+
+
+
+  return (
+    <Drawer.Navigator
+      style={{ flex: 1 }}
+      drawerContent={props => (
+        <CustomDrawerContent {...props} profile={profile} />
+      )}
+      drawerStyle={{
+        backgroundColor: "white",
+        width: width * 0.8
+      }}
+      drawerContentOptions={{
+        activeTintColor: "white",
+        inactiveTintColor: "#000",
+        activeBackgroundColor: materialTheme.COLORS.ACTIVE,
+        inactiveBackgroundColor: "transparent",
+        itemStyle: {
+          width: width * 0.74,
+          paddingHorizontal: 12,
+          justifyContent: "center",
+          alignContent: "center",
+          overflow: "hidden"
+        },
+        labelStyle: {
+          fontSize: 18,
+          fontWeight: "normal"
+        }
+      }}
+      initialRouteName="Home"
+    >
+      <Drawer.Screen
+        name="Dashboard"
+        component={HomeStack}
         options={{
-          header: ({ navigation, scene }) => (
-            <Header back white transparent title="" navigation={navigation} scene={scene} />
-          ),
-          headerTransparent: true
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="home"
+              family="GalioExtra"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+            />
+          )
         }}
       />
-    </Stack.Navigator>
+      <Drawer.Screen
+        name="Car"
+        component={CarAddEdit}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="car"
+              family="GalioExtra"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+            />
+          )
+        }}
+      />
+      <Drawer.Screen
+        name="Spendings"
+        component={SpendingsStack}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="gears"
+              family="font-awesome"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: 2, marginLeft: 2 }}
+            />
+          )
+        }}
+      />
+      <Drawer.Screen
+        name="Spendings Table"
+        component={SpendingsTableStack}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="table"
+              family="font-awesome"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: 2, marginLeft: 2 }}
+            />
+          )
+        }}
+      />
+      <Drawer.Screen
+        name="Avialable Cars"
+        component={AvialableCars}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="table"
+              family="font-awesome"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+              style={{ marginRight: 2, marginLeft: 2 }}
+            />
+          )
+        }}
+      />
+    </Drawer.Navigator>
   );
 }
 
 function AppStack(props) {
   const [profile, setProfile] = useState({})
 
-useEffect(() => {
-  const setProfileData = async () => {
-    setProfile({
-      avatar: require("../assets/images/Benz.jpg"),
-      name: await SecureStore.getItemAsync("user"),
-      type: "Kierowca",
-      plan: "Pro",
-    })
-  }
+  useEffect(() => {
+    const setProfileData = async () => {
+      setProfile({
+        avatar: require("../assets/images/Benz.jpg"),
+        name: await SecureStore.getItemAsync("user"),
+        type: "Kierowca",
+        plan: "Pro",
+      })
+    }
 
-  setProfileData();
-}, [profile])
-
-
-
+    setProfileData();
+  }, [profile])
 
   return (
     <Drawer.Navigator
@@ -249,39 +346,9 @@ useEffect(() => {
           drawerIcon: ({ focused }) => (
             <Icon
               size={16}
-              name="circle-10"
+              name="car"
               family="GalioExtra"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Settings"
-        component={SettingsStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="gears"
-              family="font-awesome"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Components"
-        component={ComponentsStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="md-switch"
-              family="ionicon"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: 2, marginLeft: 2 }}
             />
           )
         }}
@@ -352,7 +419,7 @@ export default function OnboardingStack(props) {
             animationTypeForReplace: state.isSignout ? 'pop' : 'push',
           }}
         />
-      ) : (
+      ) : state.userRole === "Admin" ? (<Stack.Screen name="Home" component={AppAdminStack} />) : (
         // User is signed in
         <Stack.Screen name="Home" component={AppStack} />
       )}

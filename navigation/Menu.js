@@ -19,7 +19,7 @@ function CustomDrawerContent({
   const insets = useSafeArea();
   const screens = [
     "Dashboard",
-    "Profile",
+    profile.type == "Kierowca" ? "Profile" : "Car",
     "Spendings",
     "Spendings Table",
     "Avialable Cars",
@@ -81,11 +81,11 @@ function CustomDrawerContent({
       </Block>
       <Block flex={0.3} style={{ paddingLeft: 7, paddingRight: 14 }}>
         <TouchableOpacity onPress={signOut}>
-        <DrawerCustomItem
-          title="Sign Out"
-          navigation={navigation}
-          focused={state.index === 8 ? true : false}
-        />
+          <DrawerCustomItem
+            title="Sign Out"
+            navigation={navigation}
+            focused={state.index === 8 ? true : false}
+          />
         </TouchableOpacity>
       </Block>
     </Block>

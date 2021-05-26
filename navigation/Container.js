@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar } from 'react-native';
+import { Alert, Platform, StatusBar } from 'react-native';
 import { Block, GalioProvider } from 'galio-framework';
 import * as SecureStore from 'expo-secure-store';
 import { materialTheme } from '../constants/';
@@ -17,6 +17,7 @@ function Container({ navigation }) {
                     return {
                         ...prevState,
                         userToken: action.token,
+                        userRole: action.role,
                         isLoading: false,
                     };
                 case 'SIGN_IN':
@@ -24,12 +25,14 @@ function Container({ navigation }) {
                         ...prevState,
                         isSignout: false,
                         userToken: action.token,
+                        userRole: action.role,
                     };
                 case 'SIGN_OUT':
                     return {
                         ...prevState,
                         isSignout: true,
                         userToken: null,
+                        userRole: null,
                     };
             }
         },
@@ -37,27 +40,24 @@ function Container({ navigation }) {
             isLoading: true,
             isSignout: false,
             userToken: null,
+            userRole: null,
         }
     );
 
     React.useEffect(() => {
-        // Fetch the token from storage then navigate to our appropriate place
+
         const bootstrapAsync = async () => {
             let userToken;
 
             try {
-                // Restore token stored in `SecureStore` or any other encrypted storage
-                 userToken = await SecureStore.getItemAsync('userToken');
+
+                userToken = await SecureStore.getItemAsync('userToken');
+                userRole = await SecureStore.getItemAsync('role');
             } catch (e) {
-                // Restoring token failed
-                AuthContext.signOut();
+                await AuthContext.signOut();
             }
 
-            // After restoring token, we may need to validate it in production apps
-
-            // This will switch to the App screen or Auth screen and this loading
-            // screen will be unmounted and thrown away.
-            dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+            dispatch({ type: 'RESTORE_TOKEN', token: userToken, role: userRole });
         };
 
         bootstrapAsync();
@@ -71,29 +71,27 @@ function Container({ navigation }) {
                     Password: data.password
                 }
 
-                await api.request(API_TYPES.USER).userLogin(user).then(respose => {
-
-                    SecureStore.setItemAsync("userToken", respose.data.token);
-                    SecureStore.setItemAsync("userId", respose.data.id);
-                    SecureStore.setItemAsync("user", data.email);
-                    SecureStore.setItemAsync("role", respose.data.role);
-                    dispatch({ type: 'SIGN_IN', token: respose.data.token });
-                    // localStorage.setItem('user', user.Email);
-                    // localStorage.setItem('userId', respose.data.id);
-                    // localStorage.setItem('token', respose.data.token);
-                    // console.log(`/admin/dashboard/${respose.data.id}`)
-                    // props.history.push(`/admin/dashboard/${respose.data.id}`);
+                await api.request(API_TYPES.USER).userLogin(user).then(async (respose) => {
+                    await SecureStore.setItemAsync("userToken", respose.data.token);
+                    await SecureStore.setItemAsync("userId", respose.data.id);
+                    await SecureStore.setItemAsync("user", data.email);
+                    await SecureStore.setItemAsync("role", respose.data.role);
+                    dispatch({ type: 'SIGN_IN', token: respose.data.token, role: respose.data.role });
+                }).catch(error => {
+                    if (error.response.data.title === "Unauthorized") {
+                        Alert.alert(error.response.data.title)
+                    }
                 });
 
-                
+
             },
-            signOut: () =>{
-                SecureStore.deleteItemAsync("userToken");
-                SecureStore.deleteItemAsync("userId");
-                SecureStore.deleteItemAsync("user");
-                SecureStore.deleteItemAsync("role");
+            signOut: async () => {
+                await SecureStore.deleteItemAsync("userToken");
+                await SecureStore.deleteItemAsync("userId");
+                await SecureStore.deleteItemAsync("user");
+                await SecureStore.deleteItemAsync("role");
                 dispatch({ type: 'SIGN_OUT' });
-            } 
+            }
         }),
         []
     );

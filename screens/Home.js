@@ -30,9 +30,34 @@ export default Dashboard = () => {
   const [dataLabels, setDataLabels] = useState([]);
   const [dataSeries, setDataSeries] = useState([]);
 
-  const Chart = ({ dataLabels, dataSeries }) => {
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userId = await SecureStore.getItemAsync("userId");
+      const userCars = await api.request(API_TYPES.SPENDINGS).fetchUserCars("/" + userId);
+      const userSpendings = await api.request(API_TYPES.SPENDINGS).fetchSpendings("/" + userId);
+
+      setData(userCars.data);
+      setSpendings(userSpendings.data);
+
+      await updateInfos(await setSumExpanses(userSpendings.data), userCars.data.length)
+    };
+
+    const updateInfos = async (sumValues, carsLength) => {
+      if (sumValues && carsLength) {
+        infos[0].desc = sumValues;
+        infos[1].desc = carsLength;
+        setCarInfos(infos)
+      }
+    }
+
+    fetchData();
+
+  }, [cars, sumValues]);
+
+  function Chart({ dataLabels, dataSeries }) {
     return (
-      <View>
+      <ScrollView horizontal>
         <LineChart
           data={{
             labels: dataLabels,
@@ -43,10 +68,11 @@ export default Dashboard = () => {
             ]
           }}
 
-          width={screenWidth - 50}
-          height={300}
+          width={screenWidth+150}
+          height={350}
           yAxisLabel=" PLN "
           yLabelsOffset={1}
+          horizontalLabelRotation={-45}
           verticalLabelRotation={90}
           xLabelsOffset={-20}
           yAxisInterval={1}
@@ -73,34 +99,8 @@ export default Dashboard = () => {
             borderRadius: 5,
           }}
         />
-      </View>)
+      </ScrollView>)
   }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const userId = await SecureStore.getItemAsync("userId");
-      const userCars = await api.request(API_TYPES.SPENDINGS).fetchUserCars("/" + userId);
-      const userSpendings = await api.request(API_TYPES.SPENDINGS).fetchSpendings("/" + userId);
-
-      setData(userCars.data);
-      setSpendings(userSpendings.data);
-
-      await updateInfos(await setSumExpanses(userSpendings.data), userCars.data.length)
-    };
-
-    const updateInfos = async (sumValues, carsLength) => {
-      if (sumValues && carsLength) {
-        infos[0].desc = sumValues;
-        infos[1].desc = carsLength;
-        infos[2].chart = <Chart dataLabels={dataLabels} dataSeries={dataSeries} />
-        setCarInfos(infos)
-      }
-    }
-
-    fetchData();
-
-  }, [carsInfos, sumValues]);
-
 
 
 
@@ -138,7 +138,6 @@ export default Dashboard = () => {
 
     return array.reduce((total, obj) => obj.price + total, 0);
   }
-
   return (
     <Block flex center style={styles.home}>
       <ScrollView
@@ -150,6 +149,8 @@ export default Dashboard = () => {
             <Item item={carsInfos[1]} full style={{ marginRight: theme.SIZES.BASE }} />
           </Block>
           <Item item={carsInfos[2]} />
+          {dataLabels.length > 0 && dataSeries.length > 0 ? <Chart dataLabels={dataLabels} dataSeries={dataSeries} /> : null}
+
         </Block>
         <DataTable>
           <DataTable.Header>
@@ -158,8 +159,8 @@ export default Dashboard = () => {
             <DataTable.Title>Kolor</DataTable.Title>
             <DataTable.Title numeric>Rok prod</DataTable.Title>
           </DataTable.Header>
-          {cars ? cars.map(car =>
-            <DataTable.Row key={car.id}>
+          {cars ? cars.map((car, index) =>
+            <DataTable.Row key={index}>
               <DataTable.Cell >{car.manufacturer}</DataTable.Cell>
               <DataTable.Cell >{car.model}</DataTable.Cell>
               <DataTable.Cell >{car.color}</DataTable.Cell>
