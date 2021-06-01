@@ -16,6 +16,7 @@ import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
 import { materialTheme } from "../constants/";
 import * as SecureStore from 'expo-secure-store';
+import CarList from '../screens/CarList';
 
 const { width } = Dimensions.get("screen");
 
@@ -101,6 +102,22 @@ function AvialableCars(props) {
         options={{
           header: ({ navigation, scene }) => (
             <Header title="Avialable Cars" scene={scene} navigation={navigation} />
+          )
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function CarListAdmin(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Car list"
+        component={CarList}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header title="Car list" scene={scene} navigation={navigation} />
           )
         }}
       />
@@ -220,6 +237,21 @@ function AppAdminStack(props) {
       <Drawer.Screen
         name="Car"
         component={CarAddEdit}
+        options={{
+          drawerIcon: ({ focused }) => (
+            <Icon
+              size={16}
+              name="car"
+              family="GalioExtra"
+              color={focused ? "white" : materialTheme.COLORS.MUTED}
+            />
+          )
+        }}
+      />
+
+<Drawer.Screen
+        name="Car list"
+        component={CarListAdmin}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon

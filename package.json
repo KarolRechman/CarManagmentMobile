@@ -9,10 +9,13 @@
     "android": "cross-env REACT_EDITOR=code expo start --android",
     "ios": "cross-env REACT_EDITOR=code expo start --ios",
     "eject": "expo eject",
-    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
+    "test": "jest"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ]
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "3.0.4",
@@ -21,6 +24,8 @@
     "@react-navigation/drawer": "5.12.4",
     "@react-navigation/native": "5.9.3",
     "@react-navigation/stack": "5.14.3",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/react-native": "^7.2.0",
     "axios": "^0.21.1",
     "expo": "^40.0.0",
     "expo-app-loading": "^1.0.1",
@@ -44,9 +49,17 @@
     "yarn": "^1.22.10"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/jest-native": "^4.0.1",
+    "babel-jest": "^27.0.2",
     "babel-preset-expo": "8.3.0",
     "cross-env": "~7.0.0",
     "expo-cli": "~3.11.7",
-    "jest-expo": "^40.0.0"
+    "jest": "^27.0.1",
+    "jest-expo": "^40.0.0",
+    "msw": "^0.29.0",
+    "react-test-renderer": "^17.0.2"
   }
 }

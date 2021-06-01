@@ -11,41 +11,49 @@ import * as SecureStore from 'expo-secure-store';
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default function Profile() {
+export default function Car(props) {
+  const [car, setCar] = useState({ idCar: 0 });
+  const selectedCarId = props.match.params.id;
 
-  const [user, setUser] = useState({});
-
-  const handleChange = (value, name) => {
-    setUser((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const handleChange = (event) => {
+    // const name = event.target.id;
+    setCar({
+      ...car,
+      // [name]: event.target.value,
+    });
   };
 
-  useEffect(() => {
+  async function SendData() {
+    car.idCar = parseInt(car.idCar);
+    car.yofProd = parseInt(car.yofProd);
+    car.kilometers = parseInt(car.kilometers);
+    car.priceDay = parseFloat(car.priceDay);
+    car.isAvailable = parseInt(car.isAvailable);
+    car.segment = parseInt(car.segment);
+    car.insurance = new Date(car.insurance);
+    car.techRev = new Date(car.techRev);
 
+    if (car.idCar != 0) {
+      await api.request(API_TYPES.CAR).update(car.id, car, );
+    } else {
+      await api.request(API_TYPES.CAR).create("/", car);
+    }
+  }
+
+  useEffect(() => {
     const fetchData = async () => {
-      const id = await SecureStore.getItemAsync("userId");
-      const userOld = await api.request(API_TYPES.USER).fetchById("/" + id);
-      setUser(userOld.data);
-      setUser((prevState) => ({
-        ...prevState,
-        idUser: id,
-      }));
+      if (selectedCarId != 0) {
+        const request = await api
+          .request(API_TYPES.CAR)
+          .fetchById("/" + selectedCarId);
+
+        setCar(request.data);
+      }
     };
 
     fetchData();
   }, []);
 
-  async function SendData() {
-
-    console.log(user);
-    await api.request(API_TYPES.USER).update(user.idUser, user).then(res => {
-      setUser(res.data);
-      Alert.alert("Zaktualizowano Dane");
-    });
-
-  }
   return (
     <View>
       <Block flex style={styles.profile}>
