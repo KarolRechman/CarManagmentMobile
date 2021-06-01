@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fetches and displays data 1`] = `
+<View>
+  <Text
+    testID="resolved"
+  >
+    Astra
+  </Text>
+</View>
+`;
