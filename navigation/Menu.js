@@ -19,7 +19,7 @@ function CustomDrawerContent({
   const insets = useSafeArea();
   const screens = [
     "Dashboard",
-    profile.type == "Kierowca" ? "Profile" : "Car",
+    profile.type == "Kierowca" ? "Profile" : "Add / Edit car",
     "Spendings",
     "Spendings Table",
     "Avialable Cars",

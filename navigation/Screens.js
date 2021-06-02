@@ -235,7 +235,7 @@ function AppAdminStack(props) {
         }}
       />
       <Drawer.Screen
-        name="Car"
+        name="Add / Edit car"
         component={CarAddEdit}
         options={{
           drawerIcon: ({ focused }) => (

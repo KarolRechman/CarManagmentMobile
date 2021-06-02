@@ -13,7 +13,7 @@ const thumbMeasure = (width - 48 - 32) / 3;
 
 export default function Car(props) {
   const [car, setCar] = useState({ idCar: 0 });
-  const selectedCarId = props.match.params.id;
+  console.log(props.route.params)
 
   const handleChange = (event) => {
     // const name = event.target.id;
@@ -34,7 +34,7 @@ export default function Car(props) {
     car.techRev = new Date(car.techRev);
 
     if (car.idCar != 0) {
-      await api.request(API_TYPES.CAR).update(car.id, car, );
+      await api.request(API_TYPES.CAR).update(car.id, car,);
     } else {
       await api.request(API_TYPES.CAR).create("/", car);
     }
@@ -42,7 +42,7 @@ export default function Car(props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedCarId != 0) {
+      if (props.route.params) {
         const request = await api
           .request(API_TYPES.CAR)
           .fetchById("/" + selectedCarId);
@@ -53,6 +53,8 @@ export default function Car(props) {
 
     fetchData();
   }, []);
+
+console.log(car)
 
   return (
     <View>
@@ -84,7 +86,7 @@ export default function Car(props) {
         <Input
           type="text"
           style={styles.inputPrice}
-          placeholderTextColor= "grey"
+          placeholderTextColor="grey"
           placeholder="Username"
           color="black"
           right
@@ -92,9 +94,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.UserName}
+          value={car.UserName}
           help="Username"
-          onChangeText={(value) => handleChange(value,"UserName")}
+          onChangeText={(value) => handleChange(value, "UserName")}
         />
         <Input
           type="text"
@@ -107,9 +109,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.Email}
+          value={car.Email}
           help="Email address"
-          onChangeText={value => handleChange(value,"Email")}
+          onChangeText={value => handleChange(value, "Email")}
         />
         <Input
           type="numeric"
@@ -122,9 +124,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.PhoneNumber}
+          value={car.PhoneNumber}
           help="Phone number"
-          onChangeText={value => handleChange(value,"PhoneNumber")}
+          onChangeText={value => handleChange(value, "PhoneNumber")}
         />
         <Input
           type="text"
@@ -137,9 +139,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.FirstName}
+          value={car.FirstName}
           help="First Name"
-          onChangeText={value => handleChange(value,"FirstName")}
+          onChangeText={value => handleChange(value, "FirstName")}
         />
         <Input
           type="text"
@@ -152,9 +154,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.LastName}
+          value={car.LastName}
           help="Last Name"
-          onChangeText={value => handleChange(value,"LastName")}
+          onChangeText={value => handleChange(value, "LastName")}
         />
         <Input
           type="text"
@@ -167,9 +169,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.City}
+          value={car.City}
           help="City"
-          onChangeText={value => handleChange(value,"City")}
+          onChangeText={value => handleChange(value, "City")}
         />
         <Input
           type="text"
@@ -182,9 +184,9 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.Country}
+          value={car.Country}
           help="Country"
-          onChangeText={value => handleChange(value,"Country")}
+          onChangeText={value => handleChange(value, "Country")}
         />
         <Input
           type="text"
@@ -197,11 +199,11 @@ export default function Car(props) {
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={user.PostCode}
+          value={car.PostCode}
           help="Postal Code"
-          onChangeText={value => handleChange(value,"PostCode")}
+          onChangeText={value => handleChange(value, "PostCode")}
         />
-              <Button style={styles.buttonSubmit} color="success" onPress={SendData}>Aktualizuj</Button>
+        <Button style={styles.buttonSubmit} color="success" onPress={SendData}>Aktualizuj</Button>
       </ScrollView>
     </View>
 
@@ -287,9 +289,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   PostalCode: {
-    marginBottom:20,
+    marginBottom: 20,
   },
   buttonSubmit: {
-    marginBottom:40,
+    marginBottom: 40,
   },
 });

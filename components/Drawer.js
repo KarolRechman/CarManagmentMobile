@@ -75,7 +75,7 @@ class DrawerItem extends React.Component {
                 color={focused ? "white" : materialTheme.COLORS.MUTED}
               />
             );
-            case "Car":
+            case "Add / Edit car":
               return (
                 <Icon
                   size={16}
@@ -88,8 +88,8 @@ class DrawerItem extends React.Component {
               return (
                 <Icon
                   size={16}
-                  name="car-sport"
-                  family="ionicon"
+                  name="format-list-numbered"
+                  family="MaterialIcons"
                   color={focused ? "white" : materialTheme.COLORS.MUTED}
                 />
               );

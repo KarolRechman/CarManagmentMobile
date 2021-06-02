@@ -9,21 +9,14 @@ import * as SecureStore from 'expo-secure-store';
 const { width } = Dimensions.get('screen');
 
 export default function CarList(props) {
-    const [selectionModel, setSelectionModel] = useState([]);
+    const { navigation } = props;
     const [carList, setData] = useState([]);
-    const [dateTimePicker, showDateTimePicker] = useState(false);
-    const [refresh, setRefresh] = useState(false);
     const [show, showButton] = useState(false);
     const [carId, setCarId] = useState(0);
-    const [date, setDate] = useState({
-        startDate: null,
-        endDate: null,
-        startTime: null,
-        endTime: null,
-    });
 
     const setCarAndCell = (cell, id) => {
         setCarId(id)
+        showButton(true)
     }
 
     useEffect(() => {
@@ -31,20 +24,9 @@ export default function CarList(props) {
             const request = await api.request(API_TYPES.CAR).fetchAll();
             setData(request.data)
         };
-
+        showButton(false)
         fetchData();
-    }, [refresh]);
-
-    // useEffect(() => {
-    //     const checkDateTime = () => {
-    //         if (checkProperties(date)) {
-    //             showButton(true)
-    //         }
-    //     }
-
-    //     checkDateTime();
-    // }, [date]);
-
+    }, []);
 
     const handlePickerChange = (mode, selectedDate, key) => {
         if (selectedDate) {
@@ -55,67 +37,46 @@ export default function CarList(props) {
         }
     };
 
-    // const checkProperties = (obj) => {
-    //     for (var key in obj) {
-    //         if (obj[key] == null || obj[key] == "")
-    //             return false;
-    //     }
-    //     return true;
-    // }
-    // //  console.log(carList)
+    // console.log(carList)
 
-    // const startDateProps = {
-    //     title: "Data wynajmu",
-    //     mode: "date",
-    //     keyName: "startDate",
-    //     onChange: handlePickerChange,
-    // }
+    const setDateCell = (date) => {
+        return date.substring(0, date.lastIndexOf("T"))
+    }
 
-    // const endDateProps = {
-    //     title: "Data zwrotu",
-    //     mode: "date",
-    //     keyName: "endDate",
-    //     onChange: handlePickerChange,
-    // }
-
-    // const startTimeProps = {
-    //     title: "Godzina wynajmu",
-    //     mode: "time",
-    //     keyName: "startTime",
-    //     onChange: handlePickerChange,
-    // }
-
-    // const endTimeProps = {
-    //     title: "Godzina zwrotu",
-    //     mode: "time",
-    //     keyName: "endTime",
-    //     onChange: handlePickerChange,
-    // }
 
     return (
         <View style={styles.home}>
-            <DataTable>
-                <DataTable.Header>
-                    <DataTable.Title>Manufacturer</DataTable.Title>
-                    <DataTable.Title numeric>Model</DataTable.Title>
-                    <DataTable.Title numeric>Color</DataTable.Title>
-                    <DataTable.Title numeric >Year</DataTable.Title>
-                    <DataTable.Title numeric >Price</DataTable.Title>
-                </DataTable.Header>
-                <ScrollView >
-                    {carList ? carList.map((car, index) =>
+            <ScrollView horizontal>
+                <DataTable>
+                    <DataTable.Header>
+                        <DataTable.Title style={styles.cell}>Manufacturer</DataTable.Title>
+                        <DataTable.Title style={styles.cell} numeric>Model</DataTable.Title>
+                        <DataTable.Title style={styles.cell} numeric >Year</DataTable.Title>
+                        <DataTable.Title style={styles.cell} numeric >Price</DataTable.Title>
 
-                        <DataTable.Row key={index}>
-                            <DataTable.Cell >{car.manufacturer}</DataTable.Cell>
-                            <DataTable.Cell numeric onPress={cell => setCarAndCell(cell, car.idCar)} >{car.model}</DataTable.Cell>
-                            <DataTable.Cell numeric>{car.color}</DataTable.Cell>
-                            <DataTable.Cell numeric>{car.yofProd}</DataTable.Cell>
-                            <DataTable.Cell numeric>{car.priceDay}</DataTable.Cell>
-                        </DataTable.Row>
-                    ) : null}
-                </ScrollView>
+                        <DataTable.Title style={styles.cell} numeric>Insurance</DataTable.Title>
+                        <DataTable.Title style={styles.cell} numeric>Available</DataTable.Title>
+                        <DataTable.Title style={styles.cell} numeric >KM</DataTable.Title>
+                        <DataTable.Title style={styles.cell} numeric >Rev</DataTable.Title>
+                    </DataTable.Header>
+                    <ScrollView >
+                        {carList ? carList.map((car, index) =>
 
-                {/* <DataTable.Pagination
+                            <DataTable.Row key={index}>
+                                <DataTable.Cell style={styles.cell} >{car.manufacturer}</DataTable.Cell>
+                                <DataTable.Cell style={styles.cell} numeric onPress={cell => setCarAndCell(cell, car.idCar)} >{car.model}</DataTable.Cell>
+                                <DataTable.Cell style={styles.cell} numeric>{car.yofProd}</DataTable.Cell>
+                                <DataTable.Cell style={styles.cell} numeric>{car.priceDay}</DataTable.Cell>
+
+                                <DataTable.Cell style={styles.cell} numeric>{setDateCell(car.insurance)}</DataTable.Cell>
+                                <DataTable.Cell style={styles.cell} numeric>{car.isAvailable}</DataTable.Cell>
+                                <DataTable.Cell style={styles.cell} numeric>{car.kilometers}</DataTable.Cell>
+                                <DataTable.Cell style={styles.cell} numeric>{setDateCell(car.techRev)}</DataTable.Cell>
+                            </DataTable.Row>
+                        ) : null}
+                    </ScrollView>
+
+                    {/* <DataTable.Pagination
                 page={1}
                 numberOfPages={3}
                 onPageChange={page => {
@@ -123,8 +84,8 @@ export default function CarList(props) {
                 }}
                 label="1-2 of 6"
             /> */}
-            </DataTable>
-            <View style={styles.pickerContainer}>
+                </DataTable>
+                {/* <View style={styles.pickerContainer}>
                 <Text>Wznajem</Text>
                 <DateTimePicker {...startDateProps} />
                 <DateTimePicker {...startTimeProps} />
@@ -134,14 +95,15 @@ export default function CarList(props) {
                 <Text>Zwrot</Text>
                 <DateTimePicker {...endDateProps} />
                 <DateTimePicker {...endTimeProps} />
-            </View>
+            </View> */}
+
+
+            </ScrollView>
             {
                 show ? (<View style={styles.pickerContainer}>
-                    <Button color="success" onPress={sendTransaction}>Zarezerwuj</Button>
+                    <Button style={styles.button} color="success" onPress={() => navigation.navigate("Add / Edit car", { carId: carId })}>Edytuj</Button>
                 </View>) : null
             }
-
-
         </View >
     )
 }
@@ -163,9 +125,19 @@ const styles = StyleSheet.create({
     },
     pickerContainer: {
         padding: 15,
+        minWidth: "80%",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
+    },
+    button: {
+        minWidth: "80%",
+        padding: 5,
+    }
+    ,
+    cell: {
+        minWidth: 70,
+        marginHorizontal: 5,
     }
 });
