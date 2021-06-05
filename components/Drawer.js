@@ -101,7 +101,6 @@ class DrawerItem extends React.Component {
   render() {
     const { focused, title, navigation } = this.props;
     
-
     return (
       <TouchableOpacity style={{ height: 55 }} onPress={() => {navigation.navigate(title)}}>
         <Block

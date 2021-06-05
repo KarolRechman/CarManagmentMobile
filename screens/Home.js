@@ -102,9 +102,10 @@ export default Dashboard = () => {
       </ScrollView>)
   }
 
-
-
   async function setSumExpanses(spendings) {
+    if(spendings){
+
+    }
     var map = spendings.reduce(function (map, spending) {
       var date = spending.date;
       var price = +spending.price;
@@ -138,6 +139,7 @@ export default Dashboard = () => {
 
     return array.reduce((total, obj) => obj.price + total, 0);
   }
+  
   return (
     <Block flex center style={styles.home}>
       <ScrollView

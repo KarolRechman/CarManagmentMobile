@@ -15,6 +15,7 @@ export default function CarList(props) {
     const [carId, setCarId] = useState(0);
 
     const setCarAndCell = (cell, id) => {
+        console.log(id)
         setCarId(id)
         showButton(true)
     }
@@ -101,7 +102,16 @@ export default function CarList(props) {
             </ScrollView>
             {
                 show ? (<View style={styles.pickerContainer}>
-                    <Button style={styles.button} color="success" onPress={() => navigation.navigate("Add / Edit car", { carId: carId })}>Edytuj</Button>
+                    <Button style={styles.button} color="success" onPress={() =>
+                        navigation.push('Home', {
+                            screen: 'Add / Edit car',
+                            params: {
+                                id: carId,
+                                edit: true,
+                            }
+                        })}>
+                        Edytuj
+                        </Button>
                 </View>) : null
             }
         </View >

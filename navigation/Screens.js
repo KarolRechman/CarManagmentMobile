@@ -127,17 +127,19 @@ function CarListAdmin(props) {
 
 
 function CarAddEdit(props) {
+  console.log(props.route, "CarAddEdit")
   return (
     <Stack.Navigator mode="card" headerMode="screen">
       <Stack.Screen
-        name="Car"
+        name="Add / Edit car"
         component={Car}
+        initialParams={{ id: props.route.params ? props.route.params.id : 0, edit: props.route.params ? props.route.params.edit : false }}
         options={{
           header: ({ navigation, scene }) => (
             <Header
               white
               transparent
-              title="Car"
+              title="Add / Edit car"
               scene={scene}
               navigation={navigation}
             />
@@ -173,6 +175,7 @@ function HomeStack(props) {
 }
 
 function AppAdminStack(props) {
+  // console.log(props)
   const [profile, setProfile] = useState({})
 
   useEffect(() => {
@@ -186,7 +189,7 @@ function AppAdminStack(props) {
     }
 
     setProfileData();
-  }, [profile])
+  }, [])
 
 
 
@@ -237,11 +240,12 @@ function AppAdminStack(props) {
       <Drawer.Screen
         name="Add / Edit car"
         component={CarAddEdit}
+        // initialParams={{ id: 0, edit: false }}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
               size={16}
-              name="car"
+              name="Add / Edit car"
               family="GalioExtra"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
             />
@@ -249,7 +253,7 @@ function AppAdminStack(props) {
         }}
       />
 
-<Drawer.Screen
+      <Drawer.Screen
         name="Car list"
         component={CarListAdmin}
         options={{
@@ -326,7 +330,7 @@ function AppStack(props) {
     }
 
     setProfileData();
-  }, [profile])
+  }, [])
 
   return (
     <Drawer.Navigator

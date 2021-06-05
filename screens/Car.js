@@ -12,15 +12,15 @@ const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
 export default function Car(props) {
-  const [car, setCar] = useState({ idCar: 0 });
-  console.log(props.route.params)
+  const [car, setCar] = useState();
+  // console.log(props.route.params.id,"Car idCar")
 
   const handleChange = (event) => {
     // const name = event.target.id;
-    setCar({
-      ...car,
-      // [name]: event.target.value,
-    });
+    // setCar({
+    //   ...car,
+    //   // [name]: event.target.value,
+    // });
   };
 
   async function SendData() {
@@ -38,23 +38,35 @@ export default function Car(props) {
     } else {
       await api.request(API_TYPES.CAR).create("/", car);
     }
+    props.navigation.push('Home', {
+      screen: 'Add / Edit car',
+      params: {
+        id: 0,
+        edit: false,
+      }
+    })
   }
 
   useEffect(() => {
+    console.log(props.route.params, "params")
     const fetchData = async () => {
-      if (props.route.params) {
+      if (props.route.params.id != 0) {
+        console.log(props.route.params, "params")
         const request = await api
           .request(API_TYPES.CAR)
-          .fetchById("/" + selectedCarId);
-
+          .fetchById("/" + props.route.params.id);
         setCar(request.data);
+      } else {
+        setCar({
+          idCar: 0
+        })
       }
     };
 
     fetchData();
   }, []);
 
-console.log(car)
+  console.log(car, "Car")
 
   return (
     <View>
@@ -84,24 +96,22 @@ console.log(car)
       </Block>
       <ScrollView style={styles.inputsView}>
         <Input
-          type="text"
-          style={styles.inputPrice}
+          type="numeric"
           placeholderTextColor="grey"
-          placeholder="Username"
+          placeholder="Car id"
           color="black"
           right
           icon="attach-money"
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.UserName}
+          value={car?.idCar?.toString()}
           help="Username"
-          onChangeText={(value) => handleChange(value, "UserName")}
+        // onChangeText={(value) => handleChange(value, "UserName")}
         />
         <Input
-          type="text"
-          style={styles.inputPrice}
-          placeholder="Email address"
+          type="default"
+          placeholder="Manufacturer"
           placeholderTextColor="grey"
           color="black"
           right
@@ -109,14 +119,41 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.Email}
-          help="Email address"
-          onChangeText={value => handleChange(value, "Email")}
+          value={car?.manufacturer}
+          help="Manufacturer"
+          onChangeText={value => handleChange(value, "manufacturer")}
+        />
+        <Input
+          type="default"
+          placeholder="Model"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={car?.model}
+          help="Model"
+          onChangeText={value => handleChange(value, "model")}
+        />
+        <Input
+          type="default"
+          placeholder="Color"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={car?.color}
+          help="Color"
+          onChangeText={value => handleChange(value, "color")}
         />
         <Input
           type="numeric"
-          style={styles.inputPrice}
-          placeholder="Phone number"
+          placeholder="Available"
           placeholderTextColor="grey"
           color="black"
           right
@@ -124,14 +161,13 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.PhoneNumber}
-          help="Phone number"
-          onChangeText={value => handleChange(value, "PhoneNumber")}
+          value={car?.isAvailable?.toString()}
+          help="Available"
+          onChangeText={value => handleChange(value, "isAvailable")}
         />
         <Input
-          type="text"
-          style={styles.inputPrice}
-          placeholder="First Name"
+          type="numeric"
+          placeholder="Kilometers"
           placeholderTextColor="grey"
           color="black"
           right
@@ -139,14 +175,13 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.FirstName}
-          help="First Name"
-          onChangeText={value => handleChange(value, "FirstName")}
+          value={car?.kilometers?.toString()}
+          help="Kilometers"
+          onChangeText={value => handleChange(value, "kilometers")}
         />
         <Input
-          type="text"
-          style={styles.inputPrice}
-          placeholder="Last Name"
+          type="numeric"
+          placeholder="Price for day"
           placeholderTextColor="grey"
           color="black"
           right
@@ -154,14 +189,13 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.LastName}
-          help="Last Name"
-          onChangeText={value => handleChange(value, "LastName")}
+          value={car?.priceDay?.toString()}
+          help="Price for day"
+          onChangeText={value => handleChange(value, "priceDay")}
         />
         <Input
-          type="text"
-          style={styles.inputPrice}
-          placeholder="City"
+          type="default"
+          placeholder="Regestration Nr."
           placeholderTextColor="grey"
           color="black"
           right
@@ -169,14 +203,13 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.City}
-          help="City"
-          onChangeText={value => handleChange(value, "City")}
+          value={car?.regNumbers?.toString()}
+          help="Regestration Nr."
+          onChangeText={value => handleChange(value, "regNumbers")}
         />
         <Input
-          type="text"
-          style={styles.inputPrice}
-          placeholder="Country"
+          type="numeric"
+          placeholder="Segment"
           placeholderTextColor="grey"
           color="black"
           right
@@ -184,14 +217,56 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.Country}
-          help="Country"
-          onChangeText={value => handleChange(value, "Country")}
+          value={car?.segment?.toString()}
+          help="Segment"
+          onChangeText={value => handleChange(value, "segment")}
         />
         <Input
-          type="text"
+          type="numeric"
+          placeholder="Year of production"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={car?.yofProd?.toString()}
+          help="Year of production"
+          onChangeText={value => handleChange(value, "yofProd")}
+        />
+        <Input
+          type="default"
+          placeholder="Format 2015-11-10"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={car?.insurance?.toString()}
+          help="Insurance"
+          onChangeText={value => handleChange(value, "insurance")}
+        />
+        <Input
+          type="default"
+          placeholder="Format 2015-11-10"
+          placeholderTextColor="grey"
+          color="black"
+          right
+          icon="attach-money"
+          family="FontAwesome5"
+          iconSize={20}
+          iconColor="black"
+          value={car?.techRev?.toString()}
+          help="Technical rev."
+          onChangeText={value => handleChange(value, "techRev")}
+        />
+        <Input
+          type="default"
           style={styles.PostalCode}
-          placeholder="Post Code"
+          placeholder="File path"
           placeholderTextColor="grey"
           color="black"
           right
@@ -199,11 +274,11 @@ console.log(car)
           family="FontAwesome5"
           iconSize={20}
           iconColor="black"
-          value={car.PostCode}
-          help="Postal Code"
-          onChangeText={value => handleChange(value, "PostCode")}
+          value={car?.filePath?.toString()}
+          help="File path"
+          onChangeText={value => handleChange(value, "filePath")}
         />
-        <Button style={styles.buttonSubmit} color="success" onPress={SendData}>Aktualizuj</Button>
+        <Button style={styles.buttonSubmit} color="success" onPress={SendData}>{props.route.params.edit ? "Aktualizuj" : "Dodaj"}</Button>
       </ScrollView>
     </View>
 
@@ -248,7 +323,6 @@ const styles = StyleSheet.create({
   inputsView: {
     marginTop: 400,
     padding: theme.SIZES.BASE,
-    //  paddingTop: -theme.SIZES.BASE * 7,
     marginHorizontal: theme.SIZES.BASE,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
@@ -257,13 +331,9 @@ const styles = StyleSheet.create({
     backgroundColor: theme.COLORS.WHITE,
     shadowColor: 'black',
     height: "75%",
-    // paddingBottom: 50,
   },
   options: {
-    // position: 'relative',
-    // padding: theme.SIZES.BASE,
     marginHorizontal: theme.SIZES.BASE,
-    // paddingTop: -theme.SIZES.BASE * 2,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
     backgroundColor: theme.COLORS.WHITE,
