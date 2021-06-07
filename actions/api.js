@@ -10,17 +10,13 @@ export const API_TYPES = {
     TRANSACTIONS: `${mainURL}Transactions`,
 }
 
-/**
- * test3@gamil.com
- * 1234Aa
- */
 export default {
 
     request(url) {
         return {
             fetchAll: () => axios.get(url),
             fetchById: id => axios.get(url + id),
-            create: (urlEnd,newRecord) => axios.post(url+urlEnd, newRecord),
+            create: (urlEnd, newRecord) => axios.post(url + urlEnd, newRecord),
             update: (id, updatedRecord) => axios.put(url + "/" + id, updatedRecord),
             delete: id => axios.delete(url + id),
             userLogin: user => axios.post(url + "/login", user),
@@ -29,7 +25,7 @@ export default {
             fetchLogs: id => axios.get(url + "/GetLogs" + id),
             fetchSpendings: id => axios.get(url + "/GetSpendings" + id),
             sendEmail: email => axios.post(url + "/Email", email)
-            
+
         }
     }
 }

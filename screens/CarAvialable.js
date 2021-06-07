@@ -8,10 +8,8 @@ import * as SecureStore from 'expo-secure-store';
 
 const { width } = Dimensions.get('screen');
 
-export default function CarAvialable(props) {
-    const [selectionModel, setSelectionModel] = useState([]);
+export default function CarAvialable() {
     const [carList, setData] = useState([]);
-    const [dateTimePicker, showDateTimePicker] = useState(false);
     const [refresh, setRefresh] = useState(false);
     const [show, showButton] = useState(false);
     const [carId, setCarId] = useState(0);
@@ -73,11 +71,10 @@ export default function CarAvialable(props) {
                 console.log(response)
                 if (response.data == "OK") {
                     setRefresh(!refresh)
-                   Alert.alert("Zarezerwano samochód")
+                    Alert.alert("Zarezerwano samochód")
                 }
             })
         }
-
     }
 
     const handlePickerChange = (mode, selectedDate, key) => {
@@ -96,7 +93,6 @@ export default function CarAvialable(props) {
         }
         return true;
     }
-    //  console.log(carList)
 
     const startDateProps = {
         title: "Data wynajmu",
@@ -138,7 +134,6 @@ export default function CarAvialable(props) {
                 </DataTable.Header>
                 <ScrollView >
                     {carList ? carList.map((car, index) =>
-
                         <DataTable.Row key={index}>
                             <DataTable.Cell >{car.manufacturer}</DataTable.Cell>
                             <DataTable.Cell numeric onPress={cell => setCarAndCell(cell, car.idCar)} >{car.model}</DataTable.Cell>
@@ -148,21 +143,11 @@ export default function CarAvialable(props) {
                         </DataTable.Row>
                     ) : null}
                 </ScrollView>
-
-                {/* <DataTable.Pagination
-                page={1}
-                numberOfPages={3}
-                onPageChange={page => {
-                    console.log(page);
-                }}
-                label="1-2 of 6"
-            /> */}
             </DataTable>
             <View style={styles.pickerContainer}>
                 <Text>Wznajem</Text>
                 <DateTimePicker {...startDateProps} />
                 <DateTimePicker {...startTimeProps} />
-
             </View>
             <View style={styles.pickerContainer}>
                 <Text>Zwrot</Text>
@@ -174,8 +159,6 @@ export default function CarAvialable(props) {
                     <Button color="success" onPress={sendTransaction}>Zarezerwuj</Button>
                 </View>) : null
             }
-
-
         </View >
     )
 }
@@ -186,7 +169,6 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         justifyContent: "space-around",
         overflow: "hidden",
-        // backgroundColor: theme.palette.background.paper,
     },
     gridList: {
         width: 500,

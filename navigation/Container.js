@@ -9,7 +9,7 @@ import Screens from './Screens';
 
 const AuthContext = React.createContext();
 
-function Container({ navigation }) {
+function Container() {
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -45,7 +45,6 @@ function Container({ navigation }) {
     );
 
     React.useEffect(() => {
-
         const bootstrapAsync = async () => {
             let userToken;
 

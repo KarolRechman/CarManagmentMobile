@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dimensions } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-
 import { Text } from "galio-framework";
-
 import Dashboard from '../screens/Home';
 import SpendingsScreen from '../screens/Spendings';
 import SpendingsTable from '../screens/SpendingsTable';
@@ -22,21 +20,6 @@ const { width } = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
-// const profile = {
-//   avatar: require("../assets/images/Benz.jpg"),
-//   name: await SecureStore.getItemAsync("userId"),
-//   type: "Kierowca",
-//   plan: "Pro",
-// };
-
-function SplashScreen() {
-  return (
-    <View>
-      <Text>Loading...</Text>
-    </View>
-  );
-}
 
 function ProfileStack(props) {
   return (
@@ -125,7 +108,6 @@ function CarListAdmin(props) {
   );
 }
 
-
 function CarAddEdit(props) {
   console.log(props.route, "CarAddEdit")
   return (
@@ -175,7 +157,6 @@ function HomeStack(props) {
 }
 
 function AppAdminStack(props) {
-  // console.log(props)
   const [profile, setProfile] = useState({})
 
   useEffect(() => {
@@ -240,7 +221,6 @@ function AppAdminStack(props) {
       <Drawer.Screen
         name="Add / Edit car"
         component={CarAddEdit}
-        // initialParams={{ id: 0, edit: false }}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -441,22 +421,17 @@ function AppStack(props) {
 export default function OnboardingStack(props) {
   const state = props.value;
   return (
-
     <Stack.Navigator mode="card" headerMode="none">
-
       {state.userToken == null ? (
-        // No token found, user isn't signed in
         <Stack.Screen
           name="SignIn"
           component={OnboardingScreen}
           options={{
             title: 'Sign in',
-            // When logging out, a pop animation feels intuitive
             animationTypeForReplace: state.isSignout ? 'pop' : 'push',
           }}
         />
       ) : state.userRole === "Admin" ? (<Stack.Screen name="Home" component={AppAdminStack} />) : (
-        // User is signed in
         <Stack.Screen name="Home" component={AppStack} />
       )}
     </Stack.Navigator>

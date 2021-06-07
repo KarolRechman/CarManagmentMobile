@@ -1,9 +1,8 @@
 import React from 'react';
 import { withNavigation } from '@react-navigation/compat';
-import { TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native';
-import { Button, Block, NavBar, Input, Text, theme } from 'galio-framework';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Block, NavBar, theme } from 'galio-framework';
 
-import Icon from './Icon';
 import materialTheme from '../constants/Theme';
 
 const { height, width } = Dimensions.get('window');
@@ -16,8 +15,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { back, title, white, transparent, navigation } = this.props;
-    // const { routeName } = navigation.state;
+    const { back, title, white, transparent } = this.props;
     const noShadow = ["Search", "Categories", "Deals", "Pro", "Profile"].includes(title);
     const headerStyles = [
       !noShadow ? styles.shadow : null,
@@ -32,12 +30,12 @@ class Header extends React.Component {
           style={styles.navbar}
           transparent={transparent}
           rightStyle={{ alignItems: 'center' }}
-          leftStyle={{ flex: 0.3, paddingTop: 2  }}
+          leftStyle={{ flex: 0.3, paddingTop: 2 }}
           leftIconName={(back ? 'chevron-left' : 'navicon')}
           leftIconColor={white ? theme.COLORS.WHITE : theme.COLORS.ICON}
           titleStyle={[
             styles.title,
-            {color: theme.COLORS[white ? 'WHITE' : 'ICON']},
+            { color: theme.COLORS[white ? 'WHITE' : 'ICON'] },
           ]}
           onLeftPress={this.handleLeftPress}
         />

@@ -13,7 +13,6 @@ const thumbMeasure = (width - 48 - 32) / 3;
 
 export default function Car(props) {
   const [car, setCar] = useState();
-  // console.log(props.route.params.id,"Car idCar")
 
   const handleChange = (event) => {
     // const name = event.target.id;

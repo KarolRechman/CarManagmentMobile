@@ -2,7 +2,6 @@ import React from 'react';
 import * as Font from 'expo-font';
 import { createIconSetFromIcoMoon } from '@expo/vector-icons';
 import { Icon } from 'galio-framework';
-
 import GalioConfig from '../assets/fonts/galioExtra';
 
 const GalioExtra = require('../assets/fonts/galioExtra.ttf');

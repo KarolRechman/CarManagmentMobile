@@ -7,7 +7,7 @@ const { width } = Dimensions.get('screen');
 
 class Item extends React.Component {
   render() {
-    const { navigation, item, horizontal, full, style, priceColor, imageStyle } = this.props;
+    const { item, horizontal, full, style, priceColor, imageStyle } = this.props;
     const imageStyles = [styles.image, full ? styles.fullImage : styles.horizontalImage, imageStyle];
 
     return (

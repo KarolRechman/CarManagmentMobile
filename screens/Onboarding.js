@@ -6,16 +6,12 @@ import {
 import { Block, Button, Text, theme, Input } from 'galio-framework';
 import { Icon } from '../components/';
 
-
-const { height, width } = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
 import materialTheme from '../constants/Theme';
 import { AuthContext } from "../navigation/Container";
 
-
-
-
-export default function Onboarding({ navigation }) {
+export default function Onboarding() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
@@ -37,7 +33,6 @@ export default function Onboarding({ navigation }) {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
-
           <StatusBar barStyle="light-content" />
           <Block flex center>
             <ImageBackground
@@ -85,19 +80,10 @@ export default function Onboarding({ navigation }) {
                     onPress={() => signIn({ email, password })}>
                     LOGIN
               </Button>}
-
                 </Block>
               </Block>
-
             </Block>
           </Block>
-
-          {/* <Text style={styles.header}>Header</Text>
-
-            <TextInput placeholder="Username" style={styles.textInput} />
-            <View style={styles.btnContainer}>
-              <Button title="Submit" onPress={() => null} />
-            </View> */}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
