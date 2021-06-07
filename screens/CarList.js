@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, ScrollView, View, Alert } from 'react-native';
-import { Button, Text } from 'galio-framework';
+import { StyleSheet, ScrollView, View } from 'react-native';
+import { Button } from 'galio-framework';
 import api, { API_TYPES } from "../actions/api";
 import { DataTable } from 'react-native-paper';
-import DateTimePicker from '../components/DateTimePicker';
-import * as SecureStore from 'expo-secure-store';
-
-const { width } = Dimensions.get('screen');
 
 export default function CarList(props) {
     const { navigation } = props;
@@ -29,21 +25,9 @@ export default function CarList(props) {
         fetchData();
     }, []);
 
-    const handlePickerChange = (mode, selectedDate, key) => {
-        if (selectedDate) {
-            setDate((prevState) => ({
-                ...prevState,
-                [key]: selectedDate
-            }))
-        }
-    };
-
-    // console.log(carList)
-
     const setDateCell = (date) => {
         return date.substring(0, date.lastIndexOf("T"))
     }
-
 
     return (
         <View style={styles.home}>
@@ -62,13 +46,11 @@ export default function CarList(props) {
                     </DataTable.Header>
                     <ScrollView >
                         {carList ? carList.map((car, index) =>
-
                             <DataTable.Row key={index}>
                                 <DataTable.Cell style={styles.cell} >{car.manufacturer}</DataTable.Cell>
                                 <DataTable.Cell style={styles.cell} numeric onPress={cell => setCarAndCell(cell, car.idCar)} >{car.model}</DataTable.Cell>
                                 <DataTable.Cell style={styles.cell} numeric>{car.yofProd}</DataTable.Cell>
                                 <DataTable.Cell style={styles.cell} numeric>{car.priceDay}</DataTable.Cell>
-
                                 <DataTable.Cell style={styles.cell} numeric>{setDateCell(car.insurance)}</DataTable.Cell>
                                 <DataTable.Cell style={styles.cell} numeric>{car.isAvailable}</DataTable.Cell>
                                 <DataTable.Cell style={styles.cell} numeric>{car.kilometers}</DataTable.Cell>
@@ -76,29 +58,7 @@ export default function CarList(props) {
                             </DataTable.Row>
                         ) : null}
                     </ScrollView>
-
-                    {/* <DataTable.Pagination
-                page={1}
-                numberOfPages={3}
-                onPageChange={page => {
-                    console.log(page);
-                }}
-                label="1-2 of 6"
-            /> */}
                 </DataTable>
-                {/* <View style={styles.pickerContainer}>
-                <Text>Wznajem</Text>
-                <DateTimePicker {...startDateProps} />
-                <DateTimePicker {...startTimeProps} />
-
-            </View>
-            <View style={styles.pickerContainer}>
-                <Text>Zwrot</Text>
-                <DateTimePicker {...endDateProps} />
-                <DateTimePicker {...endTimeProps} />
-            </View> */}
-
-
             </ScrollView>
             {
                 show ? (<View style={styles.pickerContainer}>

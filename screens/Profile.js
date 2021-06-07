@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform, View, Alert } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, ImageBackground, Platform, View, Alert } from 'react-native';
 import { Block, Text, theme, Input, Button } from 'galio-framework';
 import { LinearGradient } from 'expo-linear-gradient';
 import api, { API_TYPES } from "../actions/api";
 import { Icon } from '../components';
-import { Images, materialTheme } from '../constants';
+import { materialTheme } from '../constants';
 import { HeaderHeight } from "../constants/utils";
 import * as SecureStore from 'expo-secure-store';
 
@@ -196,10 +196,8 @@ export default function Profile() {
               <Button style={styles.buttonSubmit} color="success" onPress={SendData}>Aktualizuj</Button>
       </ScrollView>
     </View>
-
   );
 }
-
 
 const styles = StyleSheet.create({
   profile: {

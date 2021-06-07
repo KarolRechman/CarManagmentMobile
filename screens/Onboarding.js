@@ -16,7 +16,6 @@ export default function Onboarding() {
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
   const { signIn } = React.useContext(AuthContext);
-  //test3@gamil.com
 
   useEffect(() => {
     if (email != "" && password != "") {
@@ -89,7 +88,6 @@ export default function Onboarding() {
     </KeyboardAvoidingView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

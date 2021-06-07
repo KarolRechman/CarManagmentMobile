@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, ScrollView, View } from 'react-native';
-import { Button, Block, Text, Input, theme } from 'galio-framework';
+import { StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { Block, theme } from 'galio-framework';
 import api, { API_TYPES } from "../actions/api";
 import * as SecureStore from 'expo-secure-store';
 import Item from '../components/Item';
 import { DataTable } from 'react-native-paper';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 
 const screenWidth = Dimensions.get("window").width;
-
 const { width } = Dimensions.get('screen');
 import infos from '../constants/products';
-
-
-
 
 export default Dashboard = () => {
   const [cars, setData] = useState();
@@ -68,7 +57,7 @@ export default Dashboard = () => {
             ]
           }}
 
-          width={screenWidth+150}
+          width={screenWidth + 150}
           height={350}
           yAxisLabel=" PLN "
           yLabelsOffset={1}
@@ -103,7 +92,7 @@ export default Dashboard = () => {
   }
 
   async function setSumExpanses(spendings) {
-    if(spendings){
+    if (spendings) {
 
     }
     var map = spendings.reduce(function (map, spending) {
@@ -139,7 +128,7 @@ export default Dashboard = () => {
 
     return array.reduce((total, obj) => obj.price + total, 0);
   }
-  
+
   return (
     <Block flex center style={styles.home}>
       <ScrollView
@@ -152,7 +141,6 @@ export default Dashboard = () => {
           </Block>
           <Item item={carsInfos[2]} />
           {dataLabels.length > 0 && dataSeries.length > 0 ? <Chart dataLabels={dataLabels} dataSeries={dataSeries} /> : null}
-
         </Block>
         <DataTable>
           <DataTable.Header>
@@ -168,7 +156,6 @@ export default Dashboard = () => {
               <DataTable.Cell >{car.color}</DataTable.Cell>
               <DataTable.Cell numeric>{car.yofProd}</DataTable.Cell>
             </DataTable.Row>) : null}
-
           <DataTable.Pagination
             page={1}
             numberOfPages={3}
@@ -182,10 +169,6 @@ export default Dashboard = () => {
     </Block>
   )
 }
-
-
-
-
 
 const styles = StyleSheet.create({
   home: {
