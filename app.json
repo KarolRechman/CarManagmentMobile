@@ -2,7 +2,7 @@
   "expo": {
     "name": "Car Managment",
     "description": "Car Managment Mobile app",
-    "slug": "Car Managment",
+    "slug": "carmanagmentmobile",
     "privacy": "unlisted",
     "platforms": [
       "ios",
@@ -10,9 +10,9 @@
     ],
     "version": "1.8.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Benz.jpg",
+    "icon": "./assets/images/BenzQSi.png",
     "splash": {
-      "image": "./assets/images/Benz.jpg",
+      "image": "./assets/images/BenzQ.png",
       "resizeMode": "cover",
       "backgroundColor": "#6C24AA"
     },
@@ -24,6 +24,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "car.managment.mobile"
     }
   }
 }

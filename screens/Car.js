@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform, View, Alert } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, ImageBackground, Platform, View } from 'react-native';
 import { Block, Text, theme, Input, Button } from 'galio-framework';
 import { LinearGradient } from 'expo-linear-gradient';
 import api, { API_TYPES } from "../actions/api";
 import { Icon } from '../components';
-import { Images, materialTheme } from '../constants';
+import { materialTheme } from '../constants';
 import { HeaderHeight } from "../constants/utils";
-import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -14,12 +13,11 @@ const thumbMeasure = (width - 48 - 32) / 3;
 export default function Car(props) {
   const [car, setCar] = useState();
 
-  const handleChange = (event) => {
-    // const name = event.target.id;
-    // setCar({
-    //   ...car,
-    //   // [name]: event.target.value,
-    // });
+  const handleChange = (value, name) => {
+    setCar({
+      ...car,
+      [name]: value,
+    });
   };
 
   async function SendData() {
@@ -47,10 +45,8 @@ export default function Car(props) {
   }
 
   useEffect(() => {
-    console.log(props.route.params, "params")
     const fetchData = async () => {
       if (props.route.params.id != 0) {
-        console.log(props.route.params, "params")
         const request = await api
           .request(API_TYPES.CAR)
           .fetchById("/" + props.route.params.id);
@@ -64,8 +60,6 @@ export default function Car(props) {
 
     fetchData();
   }, []);
-
-  console.log(car, "Car")
 
   return (
     <View>
@@ -94,28 +88,26 @@ export default function Car(props) {
         </Block>
       </Block>
       <ScrollView style={styles.inputsView}>
-        <Input
+        {/* <Input
           type="numeric"
           placeholderTextColor="grey"
           placeholder="Car id"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
+
+
           iconSize={20}
           iconColor="black"
           value={car?.idCar?.toString()}
           help="Username"
         // onChangeText={(value) => handleChange(value, "UserName")}
-        />
+        /> */}
         <Input
           type="default"
           placeholder="Manufacturer"
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.manufacturer}
@@ -128,8 +120,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.model}
@@ -142,8 +132,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.color}
@@ -156,8 +144,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.isAvailable?.toString()}
@@ -170,8 +156,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.kilometers?.toString()}
@@ -184,8 +168,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.priceDay?.toString()}
@@ -198,8 +180,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.regNumbers?.toString()}
@@ -212,8 +192,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.segment?.toString()}
@@ -226,8 +204,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.yofProd?.toString()}
@@ -240,8 +216,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.insurance?.toString()}
@@ -254,8 +228,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.techRev?.toString()}
@@ -269,8 +241,6 @@ export default function Car(props) {
           placeholderTextColor="grey"
           color="black"
           right
-          icon="attach-money"
-          family="FontAwesome5"
           iconSize={20}
           iconColor="black"
           value={car?.filePath?.toString()}
